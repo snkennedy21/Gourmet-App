@@ -1,44 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
     integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-    crossorigin=""/>
-    <link rel="stylesheet" href="style.css" />
-    <script defer src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+    crossorigin="" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <script defer src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
     integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
     crossorigin=""></script>
-    <script
-      defer
-      type="module"
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      defer
-      nomodule
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
-    ></script>
-    <script defer src="script.js"></script>
-    <title>Gourmet</title>
-  </head>
-  <body>
-    <div class="application">
-      <header class="header-section">
-        <div class="header-container">
-          <ion-icon class="header-icon" name="restaurant-sharp"></ion-icon>
-          <h1 class="header">Gourmet</h1>
-        </div>
-        <div class="tools">
-          <ion-icon class="tools-icon" name="bookmark-outline"></ion-icon>
-          <ion-icon class="tools-icon" name="navigate-circle-outline"></ion-icon>
-          <ion-icon class="tools-icon" name="information-circle-outline"></ion-icon>
-        </d>
-      </header>
+  <script defer type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script defer nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script defer src="script.js"></script>
+  <title>Gourmet</title>
+</head>
 
-      <div id="map"></div>
-    </div>
-  </body>
+<body>
+  <div class="application">
+    <header class="header-section">
+      <div class="header-container">
+        <ion-icon class="header-icon" name="restaurant-sharp"></ion-icon>
+        <h1 class="header">Gourmet</h1>
+      </div>
+      <div class="tools">
+        <ion-icon class="tools-icon" name="bookmark-outline"></ion-icon>
+        <ion-icon class="tools-icon" name="navigate-circle-outline"></ion-icon>
+        <ion-icon class="tools-icon" name="information-circle-outline"></ion-icon>
+        </d>
+    </header>
+
+    <div id="map"></div>
+  </div>
+  <div class="form-container">
+    <form class="form" action="">
+      <div class="form__header-container">
+        <ion-icon class="form__header-icon" name="restaurant-sharp"></ion-icon>
+        <h1 class="form__header">Gourmet</h1>
+      </div>
+
+      <div class="form__section-container">
+        <div class="form__section">
+          <label class="form__label">Restaurant Name</label>
+          <input class="form__input" placeholder="Restaurant Name">
+        </div>
+        <div class="form__section">
+          <label class="form__label">Type</label>
+          <select class="form__input">
+            <option value="">Select Type</option>
+            <option value="italian">Italian</option>
+            <option value="mexican">Mexican</option>
+            <option value="american">American</option>
+            <option value="chinese">Chinese</option>
+            <option value="japanese">Japanese</option>
+            <option value="indian">Indian</option>
+            <option value="mediteranian">Mediteranian</option>
+          </select>
+        </div>
+
+
+        <div class="star-widget-container">
+          <div class="star-widget">
+            <input class="star-widget__input" type="radio" name="rate" id="rate-5">
+            <label for="rate-5" class="fas fa-star"></label>
+            <input class="star-widget__input" type="radio" name="rate" id="rate-4">
+            <label for="rate-4" class="fas fa-star"></label>
+            <input class="star-widget__input" type="radio" name="rate" id="rate-3">
+            <label for="rate-3" class="fas fa-star"></label>
+            <input class="star-widget__input" type="radio" name="rate" id="rate-2">
+            <label for="rate-2" class="fas fa-star"></label>
+            <input class="star-widget__input" type="radio" name="rate" id="rate-1">
+            <label for="rate-1" class="fas fa-star"></label>
+          </div>
+        </div>
+        <div class="form__section">
+          <label class="form__label">Notes</label>
+          <textarea class="form__text-area" placeholder="Add your notes here"></textarea>
+        </div>
+        <button class="form__button" type="submit">Submit</button>
+      </div>
+
+    </form>
+  </div>
+</body>
+
 </html>
