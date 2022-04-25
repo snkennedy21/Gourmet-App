@@ -27,7 +27,7 @@
         <h1 class="header">Gourmet</h1>
       </div>
       <div class="tools">
-        <ion-icon class="tools-icon" name="bookmark-outline"></ion-icon>
+        <ion-icon class="tools-icon bookmark-icon" name="bookmark-outline"></ion-icon>
         <ion-icon class="tools-icon" name="navigate-circle-outline"></ion-icon>
         <ion-icon class="tools-icon" name="information-circle-outline"></ion-icon>
         </d>
@@ -35,6 +35,22 @@
 
     <div id="map"></div>
   </div>
+  <div class="sidebar translate">
+    <ion-icon class="sidebar__close-button" name="close-outline"></ion-icon>
+    <div class="x">
+      <h1 class="sidebar__heading">My Choices</h1>
+      <p class="sidebar__button-title">sort by</p>
+      <div class="sidebar__button-container">
+        <button class="sidebar__button">Rating</button>
+        <button class="sidebar__button">Distance</button>
+      </div>
+    </div>
+    <div class="sidebar__restaurants-container">
+      <div class="sidebar__restaurants__el__alpha"></div>
+    </div>
+  </div>
+
+
   <div class="form-container hidden">
     <form class="form" action="">
       <div class="form__header-container">

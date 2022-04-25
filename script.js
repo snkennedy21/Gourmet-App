@@ -5,13 +5,27 @@ const formInputType = document.querySelector(".form__input--type");
 const starWidgets = document.querySelectorAll(".star-widget__input");
 const formInputNotes = document.querySelector(".form__input--notes");
 const starLabels = document.querySelectorAll(".fa-star");
+const bookmarkIcon = document.querySelector(".bookmark-icon");
+const sidebar = document.querySelector(".sidebar");
+const sidebarRestaurantsContainer = document.querySelector(
+  ".sidebar__restaurants-container"
+);
+const sidebarCloseButton = document.querySelector(".sidebar__close-button");
+const application = document.querySelector(".application");
 
 class Restaurant {
-  constructor(name, type, rating, notes) {
+  id = (Date.now() + "").slice(-10);
+  clicks = 0;
+  constructor(name, type, rating, notes, coords) {
     this.name = name;
     this.type = type;
     this.rating = rating;
     this.notes = notes;
+    this.coords = coords;
+  }
+
+  click() {
+    this.clicks++;
   }
 }
 
@@ -20,9 +34,23 @@ class App {
   #mapEvent;
   #restaurantsArray = [];
   #rating;
+  star = "<span>⭐</span>";
   constructor() {
     this._getPosition();
     form.addEventListener("submit", this._newRestaurant.bind(this));
+    bookmarkIcon.addEventListener("click", this._toggleSidebar.bind(this));
+    sidebarCloseButton.addEventListener(
+      "click",
+      this._toggleSidebar.bind(this)
+    );
+    sidebarRestaurantsContainer.addEventListener(
+      "click",
+      this._moveToMarker.bind(this)
+    );
+  }
+
+  _toggleSidebar() {
+    sidebar.classList.toggle("translate");
   }
 
   _clearForm() {
@@ -53,7 +81,7 @@ class App {
       navigator.geolocation.getCurrentPosition(
         this._buildMap.bind(this),
         function () {
-          alert("could not get current position");
+          alert("could not find your location");
         }
       );
   }
@@ -89,21 +117,20 @@ class App {
       formInputName.value,
       formInputType.value,
       this.#rating,
-      formInputNotes.value
+      formInputNotes.value,
+      [lat, lng]
     );
 
     this.#restaurantsArray.push(restaurant);
 
     console.log(this.#restaurantsArray);
 
-    const star = '<span><ion-icon name="star-outline"></ion-icon></span>';
-
     L.marker(clickLocation)
       .addTo(this.#map)
       .bindPopup(
         L.popup({
           maxWidth: 300,
-          minWidth: 100,
+          minWidth: 50,
           autoClose: false,
           closeOnClick: false,
           className: `${restaurant.type}-popup`,
@@ -111,7 +138,7 @@ class App {
       )
       .setPopupContent(
         String(
-          `<span>${formInputName.value}</span> <p>${star.repeat(
+          `<span>${formInputName.value}</span> <p>${this.star.repeat(
             this.#rating
           )}</p>`
         )
@@ -123,6 +150,8 @@ class App {
     //     `<p>${formInputName.value}</p> ${star.repeat(5)}`)
     //   .openPopup();
 
+    this._newRestaurantFile(restaurant);
+
     this._clearForm();
 
     // Add restaurant to restaurant array
@@ -130,9 +159,53 @@ class App {
     // Display restaurants to side window
   }
 
+  _newRestaurantFile(restaurant) {
+    let html = `
+    <div class="restaurant" data-id="${restaurant.id}">
+      <h1 class="restaurant__title">${restaurant.name}</h1>
+      <div class="restaurant__information">
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Type</h2>
+          <p class="restaurant__information__data">${restaurant.type}</p>
+        </div>
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Rating</h2>
+          <p class="restaurant__information__data">${this.star.repeat(
+            restaurant.rating
+          )}</p>
+        </div>
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Distance</h2>
+          <p class="restaurant__information__data">2 Kilometers</p>
+        </div>
+      </div>
+    </div>`;
+
+    document
+      .querySelector(".sidebar__restaurants__el__alpha")
+      .insertAdjacentHTML("afterend", html);
+  }
+
   _displayForm(mapE) {
     this.#mapEvent = mapE;
     formContainer.classList.remove("hidden");
+  }
+
+  _moveToMarker(e) {
+    this._toggleSidebar();
+    const restaurantEl = e.target.closest(".restaurant");
+    console.log(restaurantEl);
+
+    const restaurant = this.#restaurantsArray.find(
+      (el) => el.id === restaurantEl.dataset.id
+    );
+
+    this.#map.setView(restaurant.coords, 13, {
+      animate: true,
+      pan: {
+        duration: 1,
+      },
+    });
   }
 }
 

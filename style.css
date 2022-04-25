@@ -11,6 +11,7 @@
   --color-primary-light: #ffdf69;
   --color-primary-dark: #e6c54f;
   --dark-color: #404040;
+  --dark-color-tint: #666666;
   --light-color: #ececec;
 }
 
@@ -25,6 +26,7 @@ body {
   align-items: center;
   width: 100%;
   height: 100vh;
+  overflow: hidden;
 }
 
 .application {
@@ -34,6 +36,7 @@ body {
   width: 95%;
   height: 95vh;
   background-color: orange;
+  transition: all 0.5s;
 }
 
 .header-section {
@@ -226,6 +229,92 @@ textarea:focus {
 
 .form__button:active {
   transform: scale(1.05);
+}
+
+.sidebar {
+  grid-template-columns: 1fr;
+  z-index: 9996;
+  position: absolute;
+  background-color: var(--dark-color);
+  width: 100%;
+  height: 95vh;
+  transition: all 0.5s;
+  overflow-y: scroll;
+}
+
+.x {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar__restaurants-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar.translate {
+  transform: translateY(-110%);
+}
+
+.sidebar__close-button {
+  width: 5rem;
+  height: 5rem;
+  align-self: flex-start;
+}
+
+.sidebar__heading {
+  padding: 2rem;
+  font-size: 4rem;
+  color: var(--color-primary);
+}
+
+.sidebar__button-title {
+  font-size: 2rem;
+  color: var(--light-color);
+  padding-bottom: 1rem;
+}
+
+.sidebar__button-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.sidebar__button {
+  padding: 0.8rem 1.6rem;
+  border: none;
+  background-color: var(--color-primary);
+  color: var(--dark-color);
+  border-radius: 0.4rem;
+}
+
+.sidebar__button:hover {
+  cursor: pointer;
+  background-color: var(--color-primary-dark);
+}
+
+.restaurant {
+  padding: 1rem;
+  margin: 2rem 0;
+  width: 80%;
+  height: 10rem;
+  background-color: var(--dark-color-tint);
+  border-radius: 1rem;
+}
+
+.restaurant__information {
+  padding-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.restaurant__information__title {
+  font-size: 1.8rem;
+}
+
+.restaurant__information__data {
+  font-size: 1.4rem;
 }
 
 .hidden {
