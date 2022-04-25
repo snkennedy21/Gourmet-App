@@ -16,6 +16,7 @@ const application = document.querySelector(".application");
 class Restaurant {
   id = (Date.now() + "").slice(-10);
   clicks = 0;
+  star = "<span>⭐</span>";
   constructor(name, type, rating, notes, coords) {
     this.name = name;
     this.type = type;
@@ -37,6 +38,9 @@ class App {
   star = "<span>⭐</span>";
   constructor() {
     this._getPosition();
+
+    this._getLocalStorage();
+
     form.addEventListener("submit", this._newRestaurant.bind(this));
     bookmarkIcon.addEventListener("click", this._toggleSidebar.bind(this));
     sidebarCloseButton.addEventListener(
@@ -74,6 +78,10 @@ class App {
     }).addTo(this.#map);
 
     this.#map.on("click", this._displayForm.bind(this));
+
+    this.#restaurantsArray.forEach((restaurant) => {
+      this._renderRestaurantMarker(restaurant);
+    });
   }
 
   _getPosition() {
@@ -123,9 +131,21 @@ class App {
 
     this.#restaurantsArray.push(restaurant);
 
-    console.log(this.#restaurantsArray);
+    this._newRestaurantFile(restaurant);
 
-    L.marker(clickLocation)
+    this._renderRestaurantMarker(restaurant);
+
+    this._clearForm();
+
+    this._setLocalStorage();
+
+    // Add restaurant to restaurant array
+
+    // Display restaurants to side window
+  }
+
+  _renderRestaurantMarker(restaurant) {
+    L.marker(restaurant.coords)
       .addTo(this.#map)
       .bindPopup(
         L.popup({
@@ -138,31 +158,21 @@ class App {
       )
       .setPopupContent(
         String(
-          `<span>${formInputName.value}</span> <p>${this.star.repeat(
-            this.#rating
+          `<span>${restaurant.name}</span> <p>${this.star.repeat(
+            restaurant.rating
           )}</p>`
         )
       )
       .openPopup();
-    // L.marker(clickLocation)
-    //   .addTo(this.#map)
-    //   .bindPopup(
-    //     `<p>${formInputName.value}</p> ${star.repeat(5)}`)
-    //   .openPopup();
-
-    this._newRestaurantFile(restaurant);
-
-    this._clearForm();
-
-    // Add restaurant to restaurant array
-
-    // Display restaurants to side window
   }
 
   _newRestaurantFile(restaurant) {
     let html = `
     <div class="restaurant" data-id="${restaurant.id}">
-      <h1 class="restaurant__title">${restaurant.name}</h1>
+      <div class="restaurant__header">
+        <h1 class="restaurant__title">${restaurant.name}</h1>
+        <ion-icon class="restaurant__icon" name="trash-outline"></ion-icon> 
+      </div>
       <div class="restaurant__information">
         <div class="restaurant__information__section">
           <h2 class="restaurant__information__title">Type</h2>
@@ -206,6 +216,28 @@ class App {
         duration: 1,
       },
     });
+  }
+
+  _setLocalStorage() {
+    localStorage.setItem("restaurants", JSON.stringify(this.#restaurantsArray));
+  }
+
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem("restaurants"));
+    console.log(data);
+
+    if (!data) return;
+
+    this.#restaurantsArray = data;
+
+    this.#restaurantsArray.forEach((restaurant) => {
+      this._newRestaurantFile(restaurant);
+    });
+  }
+
+  reset() {
+    localStorage.removeItem("restaurants");
+    location.reload();
   }
 }
 

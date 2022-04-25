@@ -236,8 +236,9 @@ textarea:focus {
   z-index: 9996;
   position: absolute;
   background-color: var(--dark-color);
-  width: 100%;
+  width: 40%;
   height: 95vh;
+  right: 0;
   transition: all 0.5s;
   overflow-y: scroll;
 }
@@ -255,7 +256,7 @@ textarea:focus {
 }
 
 .sidebar.translate {
-  transform: translateY(-110%);
+  transform: translateX(100%);
 }
 
 .sidebar__close-button {
@@ -307,10 +308,23 @@ textarea:focus {
   padding-top: 1rem;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+}
+
+.restaurant__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
 .restaurant__information__title {
   font-size: 1.8rem;
+}
+
+.restaurant__icon {
+  width: 2rem;
+  height: 2rem;
 }
 
 .restaurant__information__data {
