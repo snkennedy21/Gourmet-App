@@ -13,6 +13,9 @@ const sidebarRestaurantsContainer = document.querySelector(
 const sidebarCloseButton = document.querySelector(".sidebar__close-button");
 const application = document.querySelector(".application");
 const sidebarButtonRating = document.querySelector(".sidebar__button__rating");
+const sidebarButtonDistance = document.querySelector(
+  ".sidebar__button__distance"
+);
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -41,6 +44,10 @@ class App {
   #markerArray = [];
   #openPopup = false;
   sortedBestToWorst = false;
+  sortedClosestToFarthest = false;
+  #currentLocationLatitude;
+  #currentLocationLongitude;
+  #currentLocation;
   constructor() {
     this._getPosition();
 
@@ -64,6 +71,70 @@ class App {
       "click",
       this._sortByRating.bind(this)
     );
+    sidebarButtonDistance.addEventListener(
+      "click",
+      this._sortByDistance.bind(this)
+    );
+  }
+
+  _sortByDistance() {
+    this.sortedClosestToFarthest = !this.sortedClosestToFarthest;
+    function compare(a, b) {
+      if (this.sortedClosestToFarthest) {
+        if (a.distance < b.distance) {
+          return 1;
+        }
+        if (a.distance > b.distance) {
+          return -1;
+        }
+      }
+      if (!this.sortedClosestToFarthest) {
+        if (a.distance < b.distance) {
+          return -1;
+        }
+        if (a.distance > b.distance) {
+          return 1;
+        }
+      }
+    }
+    this.#restaurantsArray.sort(compare.bind(this));
+    sidebarRestaurantsContainer.innerHTML =
+      "<div class=sidebar__restaurants__el__alpha></div>";
+    this.#restaurantsArray.forEach((el, i) => {
+      let html = `
+    <div class="restaurant" data-id="${this.#restaurantsArray[i].id}">
+      <div class="restaurant__header">
+        <h1 class="restaurant__title">${this.#restaurantsArray[i].name}</h1>
+        <div class="restaurant__icon-container">
+          <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
+          <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
+        </div>
+      </div>
+      <div class="restaurant__information">
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Type</h2>
+          <p class="restaurant__information__data">${
+            this.#restaurantsArray[i].type
+          }</p>
+        </div>
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Rating</h2>
+          <p class="restaurant__information__data">${this.star.repeat(
+            this.#restaurantsArray[i].rating
+          )}</p>
+        </div>
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Distance</h2>
+          <p class="restaurant__information__data">${
+            this.#restaurantsArray[i].distance
+          } Kilometers</p>
+        </div>
+      </div>
+    </div>`;
+      document
+        .querySelector(".sidebar__restaurants__el__alpha")
+        .insertAdjacentHTML("afterend", html);
+    });
   }
 
   _sortByRating() {
@@ -114,7 +185,9 @@ class App {
         </div>
         <div class="restaurant__information__section">
           <h2 class="restaurant__information__title">Distance</h2>
-          <p class="restaurant__information__data">2 Kilometers</p>
+          <p class="restaurant__information__data">${
+            this.#restaurantsArray[i].distance
+          } Kilometers</p>
         </div>
       </div>
     </div>`;
@@ -183,12 +256,14 @@ class App {
   }
 
   _buildMap(position) {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    const currentLocation = [latitude, longitude];
-    console.log(currentLocation);
+    this.#currentLocationLatitude = position.coords.latitude;
+    this.#currentLocationLongitude = position.coords.longitude;
+    this.#currentLocation = [
+      this.#currentLocationLatitude,
+      this.#currentLocationLongitude,
+    ];
 
-    this.#map = L.map("map").setView(currentLocation, 13);
+    this.#map = L.map("map").setView(this.#currentLocation, 13);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
@@ -217,7 +292,12 @@ class App {
     const { lat, lng } = this.#mapEvent.latlng;
     const clickLocation = [lat, lng];
 
-    console.log(this.latitude);
+    const distance =
+      Math.round(
+        this.#mapEvent.latlng.distanceTo(this.#currentLocation) / 100
+      ) / 10;
+
+    console.log(distance);
 
     starWidgets.forEach((widget, i) => {
       if (widget.checked) {
@@ -246,7 +326,8 @@ class App {
       formInputType.value,
       this.#rating,
       formInputNotes.value,
-      [lat, lng]
+      [lat, lng],
+      distance
     );
 
     this.#restaurantsArray.push(restaurant);
@@ -271,7 +352,6 @@ class App {
           maxWidth: 300,
           minWidth: 50,
           closeOnClick: false,
-          autoClose: false,
           className: `${restaurant.type}-popup`,
         })
       )
@@ -282,7 +362,6 @@ class App {
           )}</p>`
         )
       );
-    console.log(this.#openPopup);
     if (this.#openPopup) marker.openPopup();
     marker.id = restaurant.id;
     this.#markerArray.push(marker);
