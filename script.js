@@ -80,12 +80,12 @@ class App {
       // );
       // console.log(restaurantEl);
 
-      this.#map.setView(restaurantEl.coords, 13, {
-        animate: true,
-        pan: {
-          duration: 1,
-        },
-      });
+      // this.#map.setView(restaurantEl.coords, 13, {
+      //   animate: true,
+      //   pan: {
+      //     duration: 1,
+      //   },
+      // });
     }
   }
 
