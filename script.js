@@ -36,7 +36,7 @@ class App {
   #restaurantsArray = [];
   #rating;
   star = "<span>⭐</span>";
-  #markerID;
+  #markerArray = [];
   constructor() {
     this._getPosition();
 
@@ -52,6 +52,46 @@ class App {
       "click",
       this._moveToMarker.bind(this)
     );
+    sidebarRestaurantsContainer.addEventListener(
+      "click",
+      this._deleteRestaurant.bind(this)
+    );
+  }
+
+  _deleteRestaurant(e) {
+    if (e.target.classList.contains("restaurant__icon__trash")) {
+      const restaurantEl = e.target.closest(".restaurant");
+      const restaurant = this.#restaurantsArray.find(
+        (el) => el.id === restaurantEl.dataset.id
+      );
+      const restaurantMarker = this.#markerArray.find(
+        (el) => el.id === restaurantEl.dataset.id
+      );
+      const index = this.#restaurantsArray.indexOf(restaurant);
+      this.#restaurantsArray.splice(index, 1);
+      restaurantEl.remove();
+      this.#map.removeLayer(restaurantMarker);
+      this._setLocalStorage();
+    }
+  }
+
+  _moveToMarker(e) {
+    if (e.target.classList.contains("restaurant__icon__nav")) {
+      this._toggleSidebar();
+      const restaurantEl = e.target.closest(".restaurant");
+      console.log(restaurantEl);
+
+      const restaurant = this.#restaurantsArray.find(
+        (el) => el.id === restaurantEl.dataset.id
+      );
+
+      this.#map.setView(restaurant.coords, 13, {
+        animate: true,
+        pan: {
+          duration: 1,
+        },
+      });
+    }
   }
 
   _toggleSidebar() {
@@ -139,15 +179,12 @@ class App {
     this._clearForm();
 
     this._setLocalStorage();
-
-    // Add restaurant to restaurant array
-
-    // Display restaurants to side window
   }
 
   _renderRestaurantMarker(restaurant) {
-    L.marker(restaurant.coords)
-      .addTo(this.#map)
+    const marker = new L.Marker(restaurant.coords);
+    this.#map.addLayer(marker);
+    marker
       .bindPopup(
         L.popup({
           maxWidth: 300,
@@ -165,6 +202,8 @@ class App {
         )
       )
       .openPopup();
+    marker.id = restaurant.id;
+    this.#markerArray.push(marker);
   }
 
   _newRestaurantFile(restaurant) {
@@ -205,32 +244,12 @@ class App {
     formContainer.classList.remove("hidden");
   }
 
-  _moveToMarker(e) {
-    if (e.target.classList.contains("restaurant__icon__nav")) {
-      this._toggleSidebar();
-      const restaurantEl = e.target.closest(".restaurant");
-      console.log(restaurantEl);
-
-      const restaurant = this.#restaurantsArray.find(
-        (el) => el.id === restaurantEl.dataset.id
-      );
-
-      this.#map.setView(restaurant.coords, 13, {
-        animate: true,
-        pan: {
-          duration: 1,
-        },
-      });
-    }
-  }
-
   _setLocalStorage() {
     localStorage.setItem("restaurants", JSON.stringify(this.#restaurantsArray));
   }
 
   _getLocalStorage() {
     const data = JSON.parse(localStorage.getItem("restaurants"));
-    console.log(data);
 
     if (!data) return;
 
