@@ -322,6 +322,21 @@ textarea:focus {
   font-size: 1.8rem;
 }
 
+.restaurant__icon-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.restaurant__icon__nav:hover {
+  cursor: pointer;
+  color: var(--color-primary);
+}
+
+.restaurant__icon__trash:hover {
+  cursor: pointer;
+  color: red;
+}
+
 .restaurant__icon {
   width: 2rem;
   height: 2rem;
