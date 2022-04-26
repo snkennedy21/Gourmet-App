@@ -36,6 +36,7 @@ class App {
   #restaurantsArray = [];
   #rating;
   star = "<span>⭐</span>";
+  #markerID;
   constructor() {
     this._getPosition();
 
@@ -171,7 +172,10 @@ class App {
     <div class="restaurant" data-id="${restaurant.id}">
       <div class="restaurant__header">
         <h1 class="restaurant__title">${restaurant.name}</h1>
-        <ion-icon class="restaurant__icon" name="trash-outline"></ion-icon> 
+        <div class="restaurant__icon-container">
+          <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
+          <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
+        </div>
       </div>
       <div class="restaurant__information">
         <div class="restaurant__information__section">
@@ -202,20 +206,22 @@ class App {
   }
 
   _moveToMarker(e) {
-    this._toggleSidebar();
-    const restaurantEl = e.target.closest(".restaurant");
-    console.log(restaurantEl);
+    if (e.target.classList.contains("restaurant__icon__nav")) {
+      this._toggleSidebar();
+      const restaurantEl = e.target.closest(".restaurant");
+      console.log(restaurantEl);
 
-    const restaurant = this.#restaurantsArray.find(
-      (el) => el.id === restaurantEl.dataset.id
-    );
+      const restaurant = this.#restaurantsArray.find(
+        (el) => el.id === restaurantEl.dataset.id
+      );
 
-    this.#map.setView(restaurant.coords, 13, {
-      animate: true,
-      pan: {
-        duration: 1,
-      },
-    });
+      this.#map.setView(restaurant.coords, 13, {
+        animate: true,
+        pan: {
+          duration: 1,
+        },
+      });
+    }
   }
 
   _setLocalStorage() {
