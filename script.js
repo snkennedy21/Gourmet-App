@@ -12,6 +12,7 @@ const sidebarRestaurantsContainer = document.querySelector(
 );
 const sidebarCloseButton = document.querySelector(".sidebar__close-button");
 const application = document.querySelector(".application");
+const sidebarButtonRating = document.querySelector(".sidebar__button__rating");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -37,6 +38,7 @@ class App {
   #rating;
   star = "<span>⭐</span>";
   #markerArray = [];
+  sortedBestToWorst = false;
   constructor() {
     this._getPosition();
 
@@ -56,6 +58,68 @@ class App {
       "click",
       this._deleteRestaurant.bind(this)
     );
+    sidebarButtonRating.addEventListener(
+      "click",
+      this._sortByRating.bind(this)
+    );
+  }
+
+  _sortByRating() {
+    this.sortedBestToWorst = !this.sortedBestToWorst;
+    function compare(a, b) {
+      if (this.sortedBestToWorst) {
+        if (a.rating < b.rating) {
+          return -1;
+        }
+        if (a.rating > b.rating) {
+          return 1;
+        }
+      }
+      if (!this.sortedBestToWorst) {
+        if (a.rating < b.rating) {
+          return 1;
+        }
+        if (a.rating > b.rating) {
+          return -1;
+        }
+      }
+    }
+    this.#restaurantsArray.sort(compare.bind(this));
+    sidebarRestaurantsContainer.innerHTML =
+      "<div class=sidebar__restaurants__el__alpha></div>";
+    this.#restaurantsArray.forEach((el, i) => {
+      let html = `
+    <div class="restaurant" data-id="${this.#restaurantsArray[i].id}">
+      <div class="restaurant__header">
+        <h1 class="restaurant__title">${this.#restaurantsArray[i].name}</h1>
+        <div class="restaurant__icon-container">
+          <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
+          <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
+        </div>
+      </div>
+      <div class="restaurant__information">
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Type</h2>
+          <p class="restaurant__information__data">${
+            this.#restaurantsArray[i].type
+          }</p>
+        </div>
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Rating</h2>
+          <p class="restaurant__information__data">${this.star.repeat(
+            this.#restaurantsArray[i].rating
+          )}</p>
+        </div>
+        <div class="restaurant__information__section">
+          <h2 class="restaurant__information__title">Distance</h2>
+          <p class="restaurant__information__data">2 Kilometers</p>
+        </div>
+      </div>
+    </div>`;
+      document
+        .querySelector(".sidebar__restaurants__el__alpha")
+        .insertAdjacentHTML("afterend", html);
+    });
   }
 
   _deleteRestaurant(e) {
