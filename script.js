@@ -85,7 +85,7 @@ class App {
         (el) => el.id === restaurantEl.dataset.id
       );
 
-      this.#map.setView(restaurant.coords, 13, {
+      this.#map.setView(restaurant.coords, 15, {
         animate: true,
         pan: {
           duration: 1,
