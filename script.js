@@ -18,12 +18,13 @@ class Restaurant {
   id = (Date.now() + "").slice(-10);
   clicks = 0;
   star = "<span>⭐</span>";
-  constructor(name, type, rating, notes, coords) {
+  constructor(name, type, rating, notes, coords, distance) {
     this.name = name;
     this.type = type;
     this.rating = rating;
     this.notes = notes;
     this.coords = coords;
+    this.distance = distance;
   }
 
   click() {
@@ -38,6 +39,7 @@ class App {
   #rating;
   star = "<span>⭐</span>";
   #markerArray = [];
+  #openPopup = false;
   sortedBestToWorst = false;
   constructor() {
     this._getPosition();
@@ -149,6 +151,16 @@ class App {
         (el) => el.id === restaurantEl.dataset.id
       );
 
+      this.#markerArray.forEach((el) => {
+        el.closePopup();
+      });
+
+      const marker = this.#markerArray.find(
+        (el) => el.id === restaurantEl.dataset.id
+      );
+
+      marker.openPopup();
+
       this.#map.setView(restaurant.coords, 15, {
         animate: true,
         pan: {
@@ -174,6 +186,7 @@ class App {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
     const currentLocation = [latitude, longitude];
+    console.log(currentLocation);
 
     this.#map = L.map("map").setView(currentLocation, 13);
 
@@ -203,6 +216,8 @@ class App {
     e.preventDefault();
     const { lat, lng } = this.#mapEvent.latlng;
     const clickLocation = [lat, lng];
+
+    console.log(this.latitude);
 
     starWidgets.forEach((widget, i) => {
       if (widget.checked) {
@@ -238,6 +253,8 @@ class App {
 
     this._newRestaurantFile(restaurant);
 
+    this.#openPopup = true;
+
     this._renderRestaurantMarker(restaurant);
 
     this._clearForm();
@@ -253,8 +270,8 @@ class App {
         L.popup({
           maxWidth: 300,
           minWidth: 50,
-          autoClose: false,
           closeOnClick: false,
+          autoClose: false,
           className: `${restaurant.type}-popup`,
         })
       )
@@ -264,8 +281,9 @@ class App {
             restaurant.rating
           )}</p>`
         )
-      )
-      .openPopup();
+      );
+    console.log(this.#openPopup);
+    if (this.#openPopup) marker.openPopup();
     marker.id = restaurant.id;
     this.#markerArray.push(marker);
   }
@@ -293,7 +311,9 @@ class App {
         </div>
         <div class="restaurant__information__section">
           <h2 class="restaurant__information__title">Distance</h2>
-          <p class="restaurant__information__data">2 Kilometers</p>
+          <p class="restaurant__information__data">${
+            restaurant.distance
+          } Kilometers</p>
         </div>
       </div>
     </div>`;
