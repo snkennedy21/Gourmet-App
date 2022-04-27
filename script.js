@@ -16,6 +16,9 @@ const sidebarSelectorSort = document.querySelector(".sidebar__selector__sort");
 const sidebarSelectorRating = document.querySelector(
   ".sidebar__selector__rating"
 );
+const sidebarSelectorDistance = document.querySelector(
+  ".sidebar__selector__distance"
+);
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -75,6 +78,31 @@ class App {
       "change",
       this._displayRestaurantsByRating.bind(this)
     );
+
+    sidebarSelectorDistance.addEventListener(
+      "change",
+      this._displayRestaurantsByDistance.bind(this)
+    );
+  }
+
+  _displayRestaurantsByDistance() {
+    const allRestaurants = document.querySelectorAll(".restaurant");
+    const selected = sidebarSelectorDistance.value;
+    this.#markerArray.forEach((el) => {
+      el.remove();
+      if (el.distance <= selected) {
+        el.addTo(this.#map);
+      }
+    });
+
+    allRestaurants.forEach((el, i) => {
+      if (Number(allRestaurants[i].dataset.distance) <= Number(selected)) {
+        allRestaurants[i].style.display = "block";
+      }
+      if (Number(allRestaurants[i].dataset.distance) >= Number(selected)) {
+        allRestaurants[i].style.display = "none";
+      }
+    });
   }
 
   _displayRestaurantsByRating() {
@@ -348,7 +376,8 @@ class App {
   _newRestaurantFile(restaurant) {
     let html = `
     <div class="restaurant" data-id="${restaurant.id}" 
-      data-rating="${restaurant.rating}"">
+      data-rating="${restaurant.rating}"
+      data-distance="${restaurant.distance}"">
       <div class="restaurant__header">
         <h1 class="restaurant__title">${restaurant.name}</h1>
         <div class="restaurant__icon-container">
