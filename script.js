@@ -91,38 +91,95 @@ class App {
     const allRestaurants = document.querySelectorAll(".restaurant");
     this.#selectedDistance = Number(sidebarSelectorDistance.value);
     this.#selectedRating = Number(sidebarSelectorRating.value);
-    // console.log(this.#selectedDistance);
-    // console.log(this.#selectedRating);
-    // console.log(this.#markerArray[0].distance);
-    // console.log(this.#markerArray[0].rating);
-    this.#markerArray.forEach((el) => {
-      el.remove();
-      if (
-        el.distance <= this.#selectedDistance &&
-        el.rating === this.#selectedRating
-      ) {
-        el.addTo(this.#map);
-      }
-    });
+    console.log(sidebarSelectorDistance.dataset.id);
 
-    allRestaurants.forEach((el, i) => {
-      if (
-        Number(allRestaurants[i].dataset.distance) <= this.#selectedDistance
-      ) {
-        allRestaurants[i].style.display = "block";
-      }
-      if (Number(allRestaurants[i].dataset.rating) === this.#selectedRating) {
-        allRestaurants[i].style.display = "block";
-      }
-      if (
-        Number(allRestaurants[i].dataset.distance) >= this.#selectedDistance
-      ) {
-        allRestaurants[i].style.display = "none";
-      }
-      if (Number(allRestaurants[i].dataset.rating) !== this.#selectedRating) {
-        allRestaurants[i].style.display = "none";
-      }
-    });
+    // this.#markerArray.forEach((el) => {
+    //   el.remove();
+    //   if (
+    //     el.distance <= this.#selectedDistance &&
+    //     el.rating === this.#selectedRating
+    //   ) {
+    //     el.addTo(this.#map);
+    //   }
+    // });
+
+    if (this.#selectedDistance === 0) {
+      this.#markerArray.forEach((el) => {
+        el.remove();
+        if (el.rating === this.#selectedRating) {
+          el.addTo(this.#map);
+        }
+      });
+      allRestaurants.forEach((el, i) => {
+        if (Number(allRestaurants[i].dataset.rating) === this.#selectedRating) {
+          allRestaurants[i].style.display = "block";
+        }
+        if (Number(allRestaurants[i].dataset.rating) !== this.#selectedRating) {
+          allRestaurants[i].style.display = "none";
+        }
+      });
+    }
+
+    if (this.#selectedRating === 0) {
+      this.#markerArray.forEach((el) => {
+        el.remove();
+        if (el.distance <= this.#selectedDistance) {
+          el.addTo(this.#map);
+        }
+      });
+      allRestaurants.forEach((el, i) => {
+        if (
+          Number(allRestaurants[i].dataset.distance) <= this.#selectedDistance
+        ) {
+          allRestaurants[i].style.display = "block";
+        }
+        if (
+          Number(allRestaurants[i].dataset.distance) >= this.#selectedDistance
+        ) {
+          allRestaurants[i].style.display = "none";
+        }
+      });
+    }
+
+    if (this.#selectedDistance !== 0 && this.#selectedRating !== 0) {
+      this.#markerArray.forEach((el) => {
+        el.remove();
+        if (
+          el.distance <= this.#selectedDistance &&
+          el.rating === this.#selectedRating
+        ) {
+          el.addTo(this.#map);
+        }
+      });
+      allRestaurants.forEach((el, i) => {
+        if (
+          Number(allRestaurants[i].dataset.distance) <= this.#selectedDistance
+        ) {
+          allRestaurants[i].style.display = "block";
+        }
+        if (Number(allRestaurants[i].dataset.rating) === this.#selectedRating) {
+          allRestaurants[i].style.display = "block";
+        }
+        if (
+          Number(allRestaurants[i].dataset.distance) >= this.#selectedDistance
+        ) {
+          allRestaurants[i].style.display = "none";
+        }
+        if (Number(allRestaurants[i].dataset.rating) !== this.#selectedRating) {
+          allRestaurants[i].style.display = "none";
+        }
+      });
+    }
+
+    if (this.#selectedDistance === 0 && this.#selectedRating === 0) {
+      this.#markerArray.forEach((el) => {
+        el.remove();
+        el.addTo(this.#map);
+      });
+      allRestaurants.forEach((el) => {
+        el.style.display = "block";
+      });
+    }
   }
 
   _sortRestaurants() {
