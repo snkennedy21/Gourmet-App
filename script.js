@@ -51,6 +51,8 @@ class App {
   #currentLocationLatitude;
   #currentLocationLongitude;
   #currentLocation;
+  #selectedRating;
+  #selectedDistance;
   constructor() {
     this._getPosition();
 
@@ -76,49 +78,48 @@ class App {
     );
     sidebarSelectorRating.addEventListener(
       "change",
-      this._displayRestaurantsByRating.bind(this)
+      this._displayFilteredRestaurants.bind(this)
     );
 
     sidebarSelectorDistance.addEventListener(
       "change",
-      this._displayRestaurantsByDistance.bind(this)
+      this._displayFilteredRestaurants.bind(this)
     );
   }
 
-  _displayRestaurantsByDistance() {
+  _displayFilteredRestaurants() {
     const allRestaurants = document.querySelectorAll(".restaurant");
-    const selected = sidebarSelectorDistance.value;
+    this.#selectedDistance = Number(sidebarSelectorDistance.value);
+    this.#selectedRating = Number(sidebarSelectorRating.value);
+    // console.log(this.#selectedDistance);
+    // console.log(this.#selectedRating);
+    // console.log(this.#markerArray[0].distance);
+    // console.log(this.#markerArray[0].rating);
     this.#markerArray.forEach((el) => {
       el.remove();
-      if (el.distance <= selected) {
+      if (
+        el.distance <= this.#selectedDistance &&
+        el.rating === this.#selectedRating
+      ) {
         el.addTo(this.#map);
       }
     });
 
     allRestaurants.forEach((el, i) => {
-      if (Number(allRestaurants[i].dataset.distance) <= Number(selected)) {
+      if (
+        Number(allRestaurants[i].dataset.distance) <= this.#selectedDistance
+      ) {
         allRestaurants[i].style.display = "block";
       }
-      if (Number(allRestaurants[i].dataset.distance) >= Number(selected)) {
+      if (Number(allRestaurants[i].dataset.rating) === this.#selectedRating) {
+        allRestaurants[i].style.display = "block";
+      }
+      if (
+        Number(allRestaurants[i].dataset.distance) >= this.#selectedDistance
+      ) {
         allRestaurants[i].style.display = "none";
       }
-    });
-  }
-
-  _displayRestaurantsByRating() {
-    const allRestaurants = document.querySelectorAll(".restaurant");
-    const selected = sidebarSelectorRating.value;
-    this.#markerArray.forEach((el) => {
-      el.remove();
-      if (el.rating == selected) {
-        el.addTo(this.#map);
-      }
-    });
-    allRestaurants.forEach((el, i) => {
-      if (allRestaurants[i].dataset.rating === selected) {
-        allRestaurants[i].style.display = "block";
-      }
-      if (allRestaurants[i].dataset.rating !== selected) {
+      if (Number(allRestaurants[i].dataset.rating) !== this.#selectedRating) {
         allRestaurants[i].style.display = "none";
       }
     });
