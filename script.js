@@ -12,9 +12,9 @@ const sidebarRestaurantsContainer = document.querySelector(
 );
 const sidebarCloseButton = document.querySelector(".sidebar__close-button");
 const application = document.querySelector(".application");
-const sidebarButtonRating = document.querySelector(".sidebar__button__rating");
-const sidebarButtonDistance = document.querySelector(
-  ".sidebar__button__distance"
+const sidebarSelectorSort = document.querySelector(".sidebar__selector__sort");
+const sidebarSelectorRating = document.querySelector(
+  ".sidebar__selector__rating"
 );
 
 class Restaurant {
@@ -67,134 +67,110 @@ class App {
       "click",
       this._deleteRestaurant.bind(this)
     );
-    sidebarButtonRating.addEventListener(
-      "click",
-      this._sortByRating.bind(this)
+    sidebarSelectorSort.addEventListener(
+      "change",
+      this._sortRestaurants.bind(this)
     );
-    sidebarButtonDistance.addEventListener(
-      "click",
-      this._sortByDistance.bind(this)
+    sidebarSelectorRating.addEventListener(
+      "change",
+      this._displayRestaurantsByRating.bind(this)
     );
+  }
+
+  _displayRestaurantsByRating() {
+    const allRestaurants = document.querySelectorAll(".restaurant");
+    const selected = sidebarSelectorRating.value;
+    this.#markerArray.forEach((el) => {
+      el.remove();
+      if (el.rating == selected) {
+        el.addTo(this.#map);
+      }
+    });
+    allRestaurants.forEach((el, i) => {
+      if (allRestaurants[i].dataset.rating === selected) {
+        allRestaurants[i].style.display = "block";
+      }
+      if (allRestaurants[i].dataset.rating !== selected) {
+        allRestaurants[i].style.display = "none";
+      }
+    });
+  }
+
+  _sortRestaurants() {
+    const selected =
+      sidebarSelectorSort.options[sidebarSelectorSort.selectedIndex].text;
+    if (selected === "Rating") {
+      this._sortByRating();
+    }
+    if (selected === "Distance") {
+      this._sortByDistance();
+    }
+  }
+
+  _sortHTML() {
+    sidebarRestaurantsContainer.innerHTML =
+      "<div class=sidebar__restaurants__el__alpha></div>";
+    this.#restaurantsArray.forEach((el, i) => {
+      let html = `
+      <div class="restaurant" data-id="${this.#restaurantsArray[i].id}">
+        <div class="restaurant__header">
+          <h1 class="restaurant__title">${this.#restaurantsArray[i].name}</h1>
+          <div class="restaurant__icon-container">
+            <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
+            <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
+          </div>
+        </div>
+        <div class="restaurant__information">
+          <div class="restaurant__information__section">
+            <h2 class="restaurant__information__title">Type</h2>
+            <p class="restaurant__information__data">${
+              this.#restaurantsArray[i].type
+            }</p>
+          </div>
+          <div class="restaurant__information__section">
+            <h2 class="restaurant__information__title">Rating</h2>
+            <p class="restaurant__information__data">${this.star.repeat(
+              this.#restaurantsArray[i].rating
+            )}</p>
+          </div>
+          <div class="restaurant__information__section">
+            <h2 class="restaurant__information__title">Distance</h2>
+            <p class="restaurant__information__data">${
+              this.#restaurantsArray[i].distance
+            } Kilometers</p>
+          </div>
+        </div>
+      </div>`;
+      document
+        .querySelector(".sidebar__restaurants__el__alpha")
+        .insertAdjacentHTML("afterend", html);
+    });
   }
 
   _sortByDistance() {
-    this.sortedClosestToFarthest = !this.sortedClosestToFarthest;
     function compare(a, b) {
-      if (this.sortedClosestToFarthest) {
-        if (a.distance < b.distance) {
-          return 1;
-        }
-        if (a.distance > b.distance) {
-          return -1;
-        }
+      if (a.distance < b.distance) {
+        return 1;
       }
-      if (!this.sortedClosestToFarthest) {
-        if (a.distance < b.distance) {
-          return -1;
-        }
-        if (a.distance > b.distance) {
-          return 1;
-        }
+      if (a.distance > b.distance) {
+        return -1;
       }
     }
     this.#restaurantsArray.sort(compare.bind(this));
-    sidebarRestaurantsContainer.innerHTML =
-      "<div class=sidebar__restaurants__el__alpha></div>";
-    this.#restaurantsArray.forEach((el, i) => {
-      let html = `
-    <div class="restaurant" data-id="${this.#restaurantsArray[i].id}">
-      <div class="restaurant__header">
-        <h1 class="restaurant__title">${this.#restaurantsArray[i].name}</h1>
-        <div class="restaurant__icon-container">
-          <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
-          <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
-        </div>
-      </div>
-      <div class="restaurant__information">
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Type</h2>
-          <p class="restaurant__information__data">${
-            this.#restaurantsArray[i].type
-          }</p>
-        </div>
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Rating</h2>
-          <p class="restaurant__information__data">${this.star.repeat(
-            this.#restaurantsArray[i].rating
-          )}</p>
-        </div>
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Distance</h2>
-          <p class="restaurant__information__data">${
-            this.#restaurantsArray[i].distance
-          } Kilometers</p>
-        </div>
-      </div>
-    </div>`;
-      document
-        .querySelector(".sidebar__restaurants__el__alpha")
-        .insertAdjacentHTML("afterend", html);
-    });
+    this._sortHTML();
   }
 
   _sortByRating() {
-    this.sortedBestToWorst = !this.sortedBestToWorst;
     function compare(a, b) {
-      if (this.sortedBestToWorst) {
-        if (a.rating < b.rating) {
-          return -1;
-        }
-        if (a.rating > b.rating) {
-          return 1;
-        }
+      if (a.rating < b.rating) {
+        return -1;
       }
-      if (!this.sortedBestToWorst) {
-        if (a.rating < b.rating) {
-          return 1;
-        }
-        if (a.rating > b.rating) {
-          return -1;
-        }
+      if (a.rating > b.rating) {
+        return 1;
       }
     }
     this.#restaurantsArray.sort(compare.bind(this));
-    sidebarRestaurantsContainer.innerHTML =
-      "<div class=sidebar__restaurants__el__alpha></div>";
-    this.#restaurantsArray.forEach((el, i) => {
-      let html = `
-    <div class="restaurant" data-id="${this.#restaurantsArray[i].id}">
-      <div class="restaurant__header">
-        <h1 class="restaurant__title">${this.#restaurantsArray[i].name}</h1>
-        <div class="restaurant__icon-container">
-          <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
-          <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
-        </div>
-      </div>
-      <div class="restaurant__information">
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Type</h2>
-          <p class="restaurant__information__data">${
-            this.#restaurantsArray[i].type
-          }</p>
-        </div>
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Rating</h2>
-          <p class="restaurant__information__data">${this.star.repeat(
-            this.#restaurantsArray[i].rating
-          )}</p>
-        </div>
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Distance</h2>
-          <p class="restaurant__information__data">${
-            this.#restaurantsArray[i].distance
-          } Kilometers</p>
-        </div>
-      </div>
-    </div>`;
-      document
-        .querySelector(".sidebar__restaurants__el__alpha")
-        .insertAdjacentHTML("afterend", html);
-    });
+    this._sortHTML();
   }
 
   _deleteRestaurant(e) {
@@ -345,6 +321,8 @@ class App {
 
   _renderRestaurantMarker(restaurant) {
     const marker = new L.Marker(restaurant.coords);
+    marker.rating = restaurant.rating;
+    marker.distance = restaurant.distance;
     this.#map.addLayer(marker);
     marker
       .bindPopup(
@@ -369,7 +347,8 @@ class App {
 
   _newRestaurantFile(restaurant) {
     let html = `
-    <div class="restaurant" data-id="${restaurant.id}">
+    <div class="restaurant" data-id="${restaurant.id}" 
+      data-rating="${restaurant.rating}"">
       <div class="restaurant__header">
         <h1 class="restaurant__title">${restaurant.name}</h1>
         <div class="restaurant__icon-container">

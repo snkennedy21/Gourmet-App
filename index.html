@@ -37,12 +37,37 @@
   </div>
   <div class="sidebar translate">
     <ion-icon class="sidebar__close-button" name="close-outline"></ion-icon>
+    <h1 class="sidebar__heading">My Restaurants</h1>
     <div class="sidebar__container">
-      <h1 class="sidebar__heading">My Choices</h1>
-      <p class="sidebar__button-title">sort by</p>
-      <div class="sidebar__button-container">
-        <button class="sidebar__button sidebar__button__rating">Rating</button>
-        <button class="sidebar__button sidebar__button__distance">Distance</button>
+      <div>
+        <p>Sort By</p>
+        <select class="sidebar__selector__sort">
+          <option value="select">Select</option>
+          <option value="rating">Rating</option>
+          <option value="distance">Distance</option>
+        </select>
+      </div>
+      <div>
+        <p>Rating</p>
+        <select class="sidebar__selector__rating">
+          <option value="">Select</option>
+          <option value="1">⭐</option>
+          <option value="2">⭐⭐</option>
+          <option value="3">⭐⭐⭐</option>
+          <option value="4">⭐⭐⭐⭐</option>
+          <option value="5">⭐⭐⭐⭐⭐</option>
+        </select>
+      </div>
+      <div>
+        <p>Restaurants Within</p>
+        <select>
+          <option value="">Select</option>
+          <option value="5">5km</option>
+          <option value="10">10km</option>
+          <option value="15">15km</option>
+          <option value="25">25km</option>
+          <option value="50">50km</option>
+        </select>
       </div>
     </div>
     <div class="sidebar__restaurants-container">

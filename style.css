@@ -232,7 +232,6 @@ textarea:focus {
 }
 
 .sidebar {
-  grid-template-columns: 1fr;
   z-index: 9996;
   position: absolute;
   background-color: var(--dark-color);
@@ -245,8 +244,11 @@ textarea:focus {
 
 .sidebar__container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: space-around;
+}
+
+.sidebar__heading {
+  text-align: center;
 }
 
 .sidebar__restaurants-container {
@@ -269,36 +271,6 @@ textarea:focus {
 .sidebar__close-button:hover {
   cursor: pointer;
   color: red;
-}
-
-.sidebar__heading {
-  padding: 2rem;
-  font-size: 4rem;
-  color: var(--color-primary);
-}
-
-.sidebar__button-title {
-  font-size: 2rem;
-  color: var(--light-color);
-  padding-bottom: 1rem;
-}
-
-.sidebar__button-container {
-  display: flex;
-  gap: 2rem;
-}
-
-.sidebar__button {
-  padding: 0.8rem 1.6rem;
-  border: none;
-  background-color: var(--color-primary);
-  color: var(--dark-color);
-  border-radius: 0.4rem;
-}
-
-.sidebar__button:hover {
-  cursor: pointer;
-  background-color: var(--color-primary-dark);
 }
 
 .restaurant {
