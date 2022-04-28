@@ -19,6 +19,7 @@ const sidebarSelectorRating = document.querySelector(
 const sidebarSelectorDistance = document.querySelector(
   ".sidebar__selector__distance"
 );
+const sidebarSelectorType = document.querySelector(".sidebar__selector__type");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -52,6 +53,7 @@ class App {
   #selectedSorting;
   #selectedRating;
   #selectedDistance;
+  #selectedType;
   #restaurantsArray = [];
   #markerArray = [];
   #filteredRestaurantsArray;
@@ -88,6 +90,10 @@ class App {
       "change",
       this._displayFilteredRestaurants.bind(this)
     );
+    sidebarSelectorType.addEventListener(
+      "change",
+      this._displayFilteredRestaurants.bind(this)
+    );
   }
 
   _displayFilteredRestaurants() {
@@ -98,21 +104,33 @@ class App {
     this.#selectedRating = Number(sidebarSelectorRating.value);
     this.#selectedSorting = sidebarSelectorSort.value;
 
-    if (this.#selectedDistance !== 0 && this.#selectedRating !== 0) {
+    this.#selectedType = sidebarSelectorType.value;
+
+    if (
+      this.#selectedDistance !== 0 &&
+      this.#selectedRating !== 0 &&
+      this.#selectedType != 0
+    ) {
       this.#filteredMarkerArray = this.#markerArray.filter(
         (el) =>
           el.distance <= this.#selectedDistance &&
-          el.rating === this.#selectedRating
+          el.rating === this.#selectedRating &&
+          el.type === this.#selectedType
       );
 
       this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
         (el) =>
           el.distance <= this.#selectedDistance &&
-          el.rating === this.#selectedRating
+          el.rating === this.#selectedRating &&
+          el.type === this.#selectedType
       );
     }
 
-    if (this.#selectedDistance !== 0 && this.#selectedRating === 0) {
+    if (
+      this.#selectedDistance !== 0 &&
+      this.#selectedRating === 0 &&
+      this.#selectedType == 0
+    ) {
       this.#filteredMarkerArray = this.#markerArray.filter(
         (el) => el.distance <= this.#selectedDistance
       );
@@ -121,18 +139,93 @@ class App {
       );
     }
 
-    if (this.#selectedDistance === 0 && this.#selectedRating !== 0) {
+    if (
+      this.#selectedDistance === 0 &&
+      this.#selectedRating !== 0 &&
+      this.#selectedType == 0
+    ) {
       this.#filteredMarkerArray = this.#markerArray.filter(
         (el) => el.rating === this.#selectedRating
       );
       this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
         (el) => el.rating === this.#selectedRating
       );
+    }
+
+    if (
+      this.#selectedDistance === 0 &&
+      this.#selectedRating === 0 &&
+      this.#selectedType != 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) => el.type === this.#selectedType
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) => el.type === this.#selectedType
+      );
+    }
+
+    if (
+      this.#selectedDistance !== 0 &&
+      this.#selectedRating === 0 &&
+      this.#selectedType != 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) =>
+          el.type === this.#selectedType &&
+          el.distance <= this.#selectedDistance
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) =>
+          el.type === this.#selectedType &&
+          el.distance <= this.#selectedDistance
+      );
+    }
+
+    if (
+      this.#selectedDistance !== 0 &&
+      this.#selectedRating !== 0 &&
+      this.#selectedType == 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) =>
+          el.rating === this.#selectedRating &&
+          el.distance <= this.#selectedDistance
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) =>
+          el.rating === this.#selectedRating &&
+          el.distance <= this.#selectedDistance
+      );
+    }
+
+    if (
+      this.#selectedDistance === 0 &&
+      this.#selectedRating !== 0 &&
+      this.#selectedType != 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) =>
+          el.rating === this.#selectedRating && el.type === this.#selectedType
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) =>
+          el.rating === this.#selectedRating && el.type === this.#selectedType
+      );
+    }
+
+    if (
+      this.#selectedDistance === 0 &&
+      this.#selectedRating === 0 &&
+      this.#selectedType == 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray;
+      this.#filteredRestaurantsArray = this.#restaurantsArray;
     }
 
     if (this.#selectedSorting == 0) this._sortHTML();
-    if (this.#selectedSorting === "Distance") this._sortByDistance();
-    if (this.#selectedSorting === "Rating") this._sortByRating();
+    if (this.#selectedSorting === "distance") this._sortByDistance();
+    if (this.#selectedSorting === "rating") this._sortByRating();
 
     this._displayFilteredMarkers();
   }
@@ -365,6 +458,7 @@ class App {
     const marker = new L.Marker(restaurant.coords);
     marker.rating = restaurant.rating;
     marker.distance = restaurant.distance;
+    marker.type = restaurant.type;
     this.#map.addLayer(marker);
     marker
       .bindPopup(
@@ -391,7 +485,8 @@ class App {
     let html = `
     <div class="restaurant" data-id="${restaurant.id}" 
       data-rating="${restaurant.rating}"
-      data-distance="${restaurant.distance}"">
+      data-distance="${restaurant.distance}"
+      data-type="${restaurant.type}"">
       <div class="restaurant__header">
         <h1 class="restaurant__title">${restaurant.name}</h1>
         <div class="restaurant__icon-container">
