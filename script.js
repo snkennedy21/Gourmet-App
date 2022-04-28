@@ -19,6 +19,7 @@ const sidebarSelectorRating = document.querySelector(
 const sidebarSelectorDistance = document.querySelector(
   ".sidebar__selector__distance"
 );
+const sidebarSelectorType = document.querySelector(".sidebar__selector__type");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -41,10 +42,8 @@ class Restaurant {
 class App {
   #map;
   #mapEvent;
-  #restaurantsArray = [];
   #rating;
   star = "<span>⭐</span>";
-  #markerArray = [];
   #openPopup = false;
   sortedBestToWorst = false;
   sortedClosestToFarthest = false;
@@ -54,7 +53,11 @@ class App {
   #selectedSorting;
   #selectedRating;
   #selectedDistance;
+  #selectedType;
+  #restaurantsArray = [];
+  #markerArray = [];
   #filteredRestaurantsArray;
+  #filteredMarkerArray;
   constructor() {
     this._getPosition();
 
@@ -87,108 +90,143 @@ class App {
       "change",
       this._displayFilteredRestaurants.bind(this)
     );
+    sidebarSelectorType.addEventListener(
+      "change",
+      this._displayFilteredRestaurants.bind(this)
+    );
   }
 
   _displayFilteredRestaurants() {
+    this.#filteredMarkerArray = this.#markerArray;
+    this.#filteredRestaurantsArray = this.#restaurantsArray;
     const allRestaurants = document.querySelectorAll(".restaurant");
     this.#selectedDistance = Number(sidebarSelectorDistance.value);
     this.#selectedRating = Number(sidebarSelectorRating.value);
-
-    if (this.#selectedDistance === 0) {
-      this.#markerArray.forEach((el) => {
-        el.remove();
-        if (el.rating === this.#selectedRating) {
-          el.addTo(this.#map);
-        }
-      });
-      allRestaurants.forEach((el, i) => {
-        if (Number(allRestaurants[i].dataset.rating) === this.#selectedRating) {
-          allRestaurants[i].style.display = "block";
-        }
-        if (Number(allRestaurants[i].dataset.rating) !== this.#selectedRating) {
-          allRestaurants[i].style.display = "none";
-        }
-      });
-    }
-
-    if (this.#selectedRating === 0) {
-      this.#markerArray.forEach((el) => {
-        el.remove();
-        if (el.distance <= this.#selectedDistance) {
-          el.addTo(this.#map);
-        }
-      });
-      allRestaurants.forEach((el, i) => {
-        if (
-          Number(allRestaurants[i].dataset.distance) <= this.#selectedDistance
-        ) {
-          allRestaurants[i].style.display = "block";
-        }
-        if (
-          Number(allRestaurants[i].dataset.distance) >= this.#selectedDistance
-        ) {
-          allRestaurants[i].style.display = "none";
-        }
-      });
-    }
-
-    if (this.#selectedDistance !== 0 && this.#selectedRating !== 0) {
-      this.#markerArray.forEach((el) => {
-        el.remove();
-        if (
-          el.distance <= this.#selectedDistance &&
-          el.rating === this.#selectedRating
-        ) {
-          el.addTo(this.#map);
-        }
-      });
-      allRestaurants.forEach((el, i) => {
-        if (
-          Number(allRestaurants[i].dataset.distance) <= this.#selectedDistance
-        ) {
-          allRestaurants[i].style.display = "block";
-        }
-        if (Number(allRestaurants[i].dataset.rating) === this.#selectedRating) {
-          allRestaurants[i].style.display = "block";
-        }
-        if (
-          Number(allRestaurants[i].dataset.distance) >= this.#selectedDistance
-        ) {
-          allRestaurants[i].style.display = "none";
-        }
-        if (Number(allRestaurants[i].dataset.rating) !== this.#selectedRating) {
-          allRestaurants[i].style.display = "none";
-        }
-      });
-    }
-
-    if (this.#selectedDistance === 0 && this.#selectedRating === 0) {
-      this.#markerArray.forEach((el) => {
-        el.remove();
-        el.addTo(this.#map);
-      });
-      allRestaurants.forEach((el) => {
-        el.style.display = "block";
-      });
-    }
-
     this.#selectedSorting = sidebarSelectorSort.value;
-    if (this.#selectedSorting === "Rating") {
+    this.#selectedType = sidebarSelectorType.value;
+
+    if (
+      this.#selectedDistance !== 0 &&
+      this.#selectedRating !== 0 &&
+      this.#selectedType != 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) =>
+          el.distance <= this.#selectedDistance &&
+          el.rating === this.#selectedRating &&
+          el.type === this.#selectedType
+      );
+
       this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
         (el) =>
           el.distance <= this.#selectedDistance &&
-          el.rating === this.#selectedRating
+          el.rating === this.#selectedRating &&
+          el.type === this.#selectedType
       );
-      this._sortByRating();
     }
-    if (this.#selectedSorting === "Distance") {
+
+    if (
+      this.#selectedDistance !== 0 &&
+      this.#selectedRating === 0 &&
+      this.#selectedType == 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) => el.distance <= this.#selectedDistance
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) => el.distance <= this.#selectedDistance
+      );
+    }
+
+    if (
+      this.#selectedDistance === 0 &&
+      this.#selectedRating !== 0 &&
+      this.#selectedType == 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) => el.rating === this.#selectedRating
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) => el.rating === this.#selectedRating
+      );
+    }
+
+    if (
+      this.#selectedDistance === 0 &&
+      this.#selectedRating === 0 &&
+      this.#selectedType != 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) => el.type === this.#selectedType
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) => el.type === this.#selectedType
+      );
+    }
+
+    if (
+      this.#selectedDistance !== 0 &&
+      this.#selectedRating === 0 &&
+      this.#selectedType != 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) =>
+          el.type === this.#selectedType &&
+          el.distance <= this.#selectedDistance
+      );
       this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
         (el) =>
-          el.distance <= this.#selectedDistance &&
-          el.rating === this.#selectedRating
+          el.type === this.#selectedType &&
+          el.distance <= this.#selectedDistance
       );
-      this._sortByDistance();
     }
+
+    if (
+      this.#selectedDistance !== 0 &&
+      this.#selectedRating !== 0 &&
+      this.#selectedType == 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) =>
+          el.rating === this.#selectedRating &&
+          el.distance <= this.#selectedDistance
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) =>
+          el.rating === this.#selectedRating &&
+          el.distance <= this.#selectedDistance
+      );
+    }
+
+    if (
+      this.#selectedDistance === 0 &&
+      this.#selectedRating !== 0 &&
+      this.#selectedType != 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray.filter(
+        (el) =>
+          el.rating === this.#selectedRating && el.type === this.#selectedType
+      );
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) =>
+          el.rating === this.#selectedRating && el.type === this.#selectedType
+      );
+    }
+
+    if (
+      this.#selectedDistance === 0 &&
+      this.#selectedRating === 0 &&
+      this.#selectedType == 0
+    ) {
+      this.#filteredMarkerArray = this.#markerArray;
+      this.#filteredRestaurantsArray = this.#restaurantsArray;
+    }
+
+    if (this.#selectedSorting == 0) this._sortHTML();
+    if (this.#selectedSorting === "distance") this._sortByDistance();
+    if (this.#selectedSorting === "rating") this._sortByRating();
+
+    this._displayFilteredMarkers();
   }
 
   _sortHTML() {
@@ -203,7 +241,7 @@ class App {
           }</h1>
           <div class="restaurant__icon-container">
             <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
-            <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
+            <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon>
           </div>
         </div>
         <div class="restaurant__information">
@@ -233,6 +271,15 @@ class App {
     });
   }
 
+  _displayFilteredMarkers() {
+    this.#markerArray.forEach((el) => {
+      el.remove();
+    });
+    this.#filteredMarkerArray.forEach((el) => {
+      el.addTo(this.#map);
+    });
+  }
+
   _sortByDistance() {
     function compare(a, b) {
       if (a.distance < b.distance) {
@@ -242,6 +289,7 @@ class App {
         return -1;
       }
     }
+    console.log("hello");
     this.#filteredRestaurantsArray.sort(compare.bind(this));
     this._sortHTML();
   }
@@ -409,6 +457,7 @@ class App {
     const marker = new L.Marker(restaurant.coords);
     marker.rating = restaurant.rating;
     marker.distance = restaurant.distance;
+    marker.type = restaurant.type;
     this.#map.addLayer(marker);
     marker
       .bindPopup(
@@ -435,7 +484,8 @@ class App {
     let html = `
     <div class="restaurant" data-id="${restaurant.id}" 
       data-rating="${restaurant.rating}"
-      data-distance="${restaurant.distance}"">
+      data-distance="${restaurant.distance}"
+      data-type="${restaurant.type}"">
       <div class="restaurant__header">
         <h1 class="restaurant__title">${restaurant.name}</h1>
         <div class="restaurant__icon-container">
