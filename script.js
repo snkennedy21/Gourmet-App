@@ -51,8 +51,10 @@ class App {
   #currentLocationLatitude;
   #currentLocationLongitude;
   #currentLocation;
+  #selectedSorting;
   #selectedRating;
   #selectedDistance;
+  #filteredRestaurantsArray;
   constructor() {
     this._getPosition();
 
@@ -74,7 +76,7 @@ class App {
     );
     sidebarSelectorSort.addEventListener(
       "change",
-      this._sortRestaurants.bind(this)
+      this._displayFilteredRestaurants.bind(this)
     );
     sidebarSelectorRating.addEventListener(
       "change",
@@ -91,17 +93,6 @@ class App {
     const allRestaurants = document.querySelectorAll(".restaurant");
     this.#selectedDistance = Number(sidebarSelectorDistance.value);
     this.#selectedRating = Number(sidebarSelectorRating.value);
-    console.log(sidebarSelectorDistance.dataset.id);
-
-    // this.#markerArray.forEach((el) => {
-    //   el.remove();
-    //   if (
-    //     el.distance <= this.#selectedDistance &&
-    //     el.rating === this.#selectedRating
-    //   ) {
-    //     el.addTo(this.#map);
-    //   }
-    // });
 
     if (this.#selectedDistance === 0) {
       this.#markerArray.forEach((el) => {
@@ -180,15 +171,22 @@ class App {
         el.style.display = "block";
       });
     }
-  }
 
-  _sortRestaurants() {
-    const selected =
-      sidebarSelectorSort.options[sidebarSelectorSort.selectedIndex].text;
-    if (selected === "Rating") {
+    this.#selectedSorting = sidebarSelectorSort.value;
+    if (this.#selectedSorting === "Rating") {
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) =>
+          el.distance <= this.#selectedDistance &&
+          el.rating === this.#selectedRating
+      );
       this._sortByRating();
     }
-    if (selected === "Distance") {
+    if (this.#selectedSorting === "Distance") {
+      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+        (el) =>
+          el.distance <= this.#selectedDistance &&
+          el.rating === this.#selectedRating
+      );
       this._sortByDistance();
     }
   }
@@ -196,11 +194,13 @@ class App {
   _sortHTML() {
     sidebarRestaurantsContainer.innerHTML =
       "<div class=sidebar__restaurants__el__alpha></div>";
-    this.#restaurantsArray.forEach((el, i) => {
+    this.#filteredRestaurantsArray.forEach((el, i) => {
       let html = `
-      <div class="restaurant" data-id="${this.#restaurantsArray[i].id}">
+      <div class="restaurant" data-id="${this.#filteredRestaurantsArray[i].id}">
         <div class="restaurant__header">
-          <h1 class="restaurant__title">${this.#restaurantsArray[i].name}</h1>
+          <h1 class="restaurant__title">${
+            this.#filteredRestaurantsArray[i].name
+          }</h1>
           <div class="restaurant__icon-container">
             <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
             <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
@@ -210,19 +210,19 @@ class App {
           <div class="restaurant__information__section">
             <h2 class="restaurant__information__title">Type</h2>
             <p class="restaurant__information__data">${
-              this.#restaurantsArray[i].type
+              this.#filteredRestaurantsArray[i].type
             }</p>
           </div>
           <div class="restaurant__information__section">
             <h2 class="restaurant__information__title">Rating</h2>
             <p class="restaurant__information__data">${this.star.repeat(
-              this.#restaurantsArray[i].rating
+              this.#filteredRestaurantsArray[i].rating
             )}</p>
           </div>
           <div class="restaurant__information__section">
             <h2 class="restaurant__information__title">Distance</h2>
             <p class="restaurant__information__data">${
-              this.#restaurantsArray[i].distance
+              this.#filteredRestaurantsArray[i].distance
             } Kilometers</p>
           </div>
         </div>
@@ -242,7 +242,7 @@ class App {
         return -1;
       }
     }
-    this.#restaurantsArray.sort(compare.bind(this));
+    this.#filteredRestaurantsArray.sort(compare.bind(this));
     this._sortHTML();
   }
 
@@ -255,7 +255,7 @@ class App {
         return 1;
       }
     }
-    this.#restaurantsArray.sort(compare.bind(this));
+    this.#filteredRestaurantsArray.sort(compare.bind(this));
     this._sortHTML();
   }
 
