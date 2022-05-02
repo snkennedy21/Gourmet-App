@@ -20,6 +20,7 @@ const sidebarSelectorDistance = document.querySelector(
   ".sidebar__selector__distance"
 );
 const sidebarSelectorType = document.querySelector(".sidebar__selector__type");
+const compassIcon = document.querySelector(".compass-icon");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -93,6 +94,10 @@ class App {
     sidebarSelectorType.addEventListener(
       "change",
       this._displayFilteredRestaurants.bind(this)
+    );
+    compassIcon.addEventListener(
+      "click",
+      this._moveToCurrentPosition.bind(this)
     );
   }
 
@@ -363,6 +368,10 @@ class App {
       widget.checked = false;
     });
     formContainer.classList.add("hidden");
+  }
+
+  _moveToCurrentPosition() {
+    this.#map.setView(this.#currentLocation, 13);
   }
 
   _buildMap(position) {

@@ -239,22 +239,44 @@ textarea:focus {
   height: 95vh;
   right: 0;
   transition: all 0.5s;
-  overflow-y: scroll;
+  overflow: hidden;
 }
 
 .sidebar__container {
-  display: flex;
-  justify-content: space-around;
+  padding: 2rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 1rem;
 }
 
 .sidebar__heading {
   text-align: center;
 }
 
-.sidebar__restaurants-container {
+.sidebar__selector-container {
+  justify-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+}
+
+.sidebar__selector-title {
+  font-size: 1.6rem;
+}
+
+.sidebar__selector {
+  padding: 1rem 0.5rem;
+  width: 70%;
+}
+
+.sidebar__restaurants-container {
+  height: calc(100vh - 28rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .sidebar.translate {

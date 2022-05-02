@@ -28,65 +28,67 @@
       </div>
       <div class="tools">
         <ion-icon class="tools-icon bookmark-icon" name="bookmark-outline"></ion-icon>
-        <ion-icon class="tools-icon" name="navigate-circle-outline"></ion-icon>
-        <ion-icon class="tools-icon" name="information-circle-outline"></ion-icon>
+        <ion-icon class="tools-icon compass-icon" name="navigate-circle-outline"></ion-icon>
+        <ion-icon class="tools-icon information-icon" name="information-circle-outline"></ion-icon>
         </d>
     </header>
 
     <div id="map"></div>
   </div>
   <div class="sidebar translate">
-    <ion-icon class="sidebar__close-button" name="close-outline"></ion-icon>
-    <h1 class="sidebar__heading">My Restaurants</h1>
-    <div class="sidebar__container">
-      <div>
-        <p>Sort By</p>
-        <select class="sidebar__selector__sort">
-          <option value="0">All</option>
-          <option value="rating">Rating</option>
-          <option value="distance">Distance</option>
-        </select>
-      </div>
-      <div>
-        <p>Rating</p>
-        <select class="sidebar__selector__rating">
-          <option value="0">All</option>
-          <option value="1">⭐</option>
-          <option value="2">⭐⭐</option>
-          <option value="3">⭐⭐⭐</option>
-          <option value="4">⭐⭐⭐⭐</option>
-          <option value="5">⭐⭐⭐⭐⭐</option>
-        </select>
-      </div>
-      <div>
-        <p>Restaurants Within</p>
-        <select class="sidebar__selector__distance">
-          <option value="0">All</option>
-          <option value="5">5km</option>
-          <option value="10">10km</option>
-          <option value="15">15km</option>
-          <option value="25">25km</option>
-          <option value="50">50km</option>
-        </select>
-      </div>
-      <div>
-        <p>Type</p>
-        <select class="sidebar__selector__type">
-          <option value="0">All</option>
-          <option value="american">American</option>
-          <option value="chinese">Chinese</option>
-          <option value="caribbean">Caribbean</option>
-          <option value="french">French</option>
-          <option value="greek">Greek</option>
-          <option value="indian">Indian</option>
-          <option value="italian">Italian</option>
-          <option value="japanese">Japanese</option>
-          <option value="mediteranian">Mediteranian</option>
-          <option value="mexican">Mexican</option>
-          <option value="middle-easter">Middle Eastern</option>
-          <option value="thai">Thai</option>
-          <option value="vietnamese">Vietnamese</option>
-        </select>
+    <div class="x">
+      <ion-icon class="sidebar__close-button" name="close-outline"></ion-icon>
+      <h1 class="sidebar__heading">My Restaurants</h1>
+      <div class="sidebar__container">
+        <div class="sidebar__selector-container">
+          <p class="sidebar__selector-title">Order List By</p>
+          <select class="sidebar__selector sidebar__selector__sort">
+            <option value="0">Select</option>
+            <option value="rating">Rating</option>
+            <option value="distance">Distance</option>
+          </select>
+        </div>
+        <div class="sidebar__selector-container">
+          <p class="sidebar__selector-title">Filter By Rating</p>
+          <select class="sidebar__selector sidebar__selector__rating">
+            <option value="0">Any Rating</option>
+            <option value="1">⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+          </select>
+        </div>
+        <div class="sidebar__selector-container">
+          <p class="sidebar__selector-title">Filter By Distance</p>
+          <select class="sidebar__selector sidebar__selector__distance">
+            <option value="0">Any Distance</option>
+            <option value="5">Within 5km</option>
+            <option value="10">Within 10km</option>
+            <option value="15">Within 15km</option>
+            <option value="25">Within 25km</option>
+            <option value="50">Within 50km</option>
+          </select>
+        </div>
+        <div class="sidebar__selector-container">
+          <p class="sidebar__selector-title">Filter By Cuisine</p>
+          <select class="sidebar__selector sidebar__selector__type">
+            <option value="0">Any Type</option>
+            <option value="american">American</option>
+            <option value="chinese">Chinese</option>
+            <option value="caribbean">Caribbean</option>
+            <option value="french">French</option>
+            <option value="greek">Greek</option>
+            <option value="indian">Indian</option>
+            <option value="italian">Italian</option>
+            <option value="japanese">Japanese</option>
+            <option value="mediteranian">Mediteranian</option>
+            <option value="mexican">Mexican</option>
+            <option value="middle-easter">Middle Eastern</option>
+            <option value="thai">Thai</option>
+            <option value="vietnamese">Vietnamese</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="sidebar__restaurants-container">
