@@ -21,6 +21,18 @@ const sidebarSelectorDistance = document.querySelector(
 );
 const sidebarSelectorType = document.querySelector(".sidebar__selector__type");
 const compassIcon = document.querySelector(".compass-icon");
+const informationIcon = document.querySelector(".information-icon");
+const modalWrap = document.querySelector(".modal-wrap");
+const modalCloseButton = document.querySelector(".modal__intro-button--close");
+const modalLearnMoreButon = document.querySelector(
+  ".modal__intro-button--learn"
+);
+const modalTutorialContainer = document.querySelector(
+  ".modal__tutorial-container"
+);
+const allModalTutorialContainers = document.querySelectorAll(
+  ".modal__tutorial-container"
+);
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -99,6 +111,22 @@ class App {
       "click",
       this._moveToCurrentPosition.bind(this)
     );
+    informationIcon.addEventListener("click", this._openModal.bind(this));
+    modalCloseButton.addEventListener("click", this._closeModal.bind(this));
+    modalLearnMoreButon.addEventListener(
+      "click",
+      this._startTutorial.bind(this)
+    );
+  }
+
+  _startTutorial() {}
+
+  _closeModal() {
+    modalWrap.classList.add("hidden");
+  }
+
+  _openModal() {
+    modalWrap.classList.remove("hidden");
   }
 
   _displayFilteredRestaurants() {
