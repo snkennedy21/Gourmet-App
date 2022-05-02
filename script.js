@@ -20,6 +20,19 @@ const sidebarSelectorDistance = document.querySelector(
   ".sidebar__selector__distance"
 );
 const sidebarSelectorType = document.querySelector(".sidebar__selector__type");
+const compassIcon = document.querySelector(".compass-icon");
+const informationIcon = document.querySelector(".information-icon");
+const modalWrap = document.querySelector(".modal-wrap");
+const modalCloseButton = document.querySelector(".modal__intro-button--close");
+const modalLearnMoreButon = document.querySelector(
+  ".modal__intro-button--learn"
+);
+const modalTutorialContainer = document.querySelector(
+  ".modal__tutorial-container"
+);
+const allModalTutorialContainers = document.querySelectorAll(
+  ".modal__tutorial-container"
+);
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -94,6 +107,26 @@ class App {
       "change",
       this._displayFilteredRestaurants.bind(this)
     );
+    compassIcon.addEventListener(
+      "click",
+      this._moveToCurrentPosition.bind(this)
+    );
+    informationIcon.addEventListener("click", this._openModal.bind(this));
+    modalCloseButton.addEventListener("click", this._closeModal.bind(this));
+    modalLearnMoreButon.addEventListener(
+      "click",
+      this._startTutorial.bind(this)
+    );
+  }
+
+  _startTutorial() {}
+
+  _closeModal() {
+    modalWrap.classList.add("hidden");
+  }
+
+  _openModal() {
+    modalWrap.classList.remove("hidden");
   }
 
   _displayFilteredRestaurants() {
@@ -242,27 +275,23 @@ class App {
           }</h1>
           <div class="restaurant__icon-container">
             <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
-            <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon>
+            <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
           </div>
         </div>
         <div class="restaurant__information">
-          <div class="restaurant__information__section">
-            <h2 class="restaurant__information__title">Type</h2>
-            <p class="restaurant__information__data">${
+          <div class="restaurant__data-container>
+            <p class="restaurant__data"><span class="star-emoji">${this.star.repeat(
+              this.#filteredRestaurantsArray[i].rating
+            )}</span></p>
+            <p class="restaurant__data">${
               this.#filteredRestaurantsArray[i].type
             }</p>
-          </div>
-          <div class="restaurant__information__section">
-            <h2 class="restaurant__information__title">Rating</h2>
-            <p class="restaurant__information__data">${this.star.repeat(
-              this.#filteredRestaurantsArray[i].rating
-            )}</p>
-          </div>
-          <div class="restaurant__information__section">
-            <h2 class="restaurant__information__title">Distance</h2>
-            <p class="restaurant__information__data">${
+            <p class="restaurant__data">${
               this.#filteredRestaurantsArray[i].distance
-            } Kilometers</p>
+            } Km</p>
+            <p class="restaurant__notes">${
+              this.#filteredRestaurantsArray[i].notes
+            }</p>
           </div>
         </div>
       </div>`;
@@ -364,6 +393,10 @@ class App {
       widget.checked = false;
     });
     formContainer.classList.add("hidden");
+  }
+
+  _moveToCurrentPosition() {
+    this.#map.setView(this.#currentLocation, 13);
   }
 
   _buildMap(position) {
@@ -495,21 +528,13 @@ class App {
         </div>
       </div>
       <div class="restaurant__information">
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Type</h2>
-          <p class="restaurant__information__data">${restaurant.type}</p>
-        </div>
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Rating</h2>
-          <p class="restaurant__information__data">${this.star.repeat(
+        <div class="restaurant__data-container>
+          <p class="restaurant__data"><span class="star-emoji">${this.star.repeat(
             restaurant.rating
-          )}</p>
-        </div>
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Distance</h2>
-          <p class="restaurant__information__data">${
-            restaurant.distance
-          } Kilometers</p>
+          )}</span></p>
+          <p class="restaurant__data">${restaurant.type}</p>
+          <p class="restaurant__data">${restaurant.distance} Km</p>
+          <p class="restaurant__notes">${restaurant.notes}</p>
         </div>
       </div>
     </div>`;
