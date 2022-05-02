@@ -299,27 +299,29 @@ textarea:focus {
   padding: 1rem;
   margin: 2rem 0;
   width: 80%;
-  height: 10rem;
   background-color: var(--dark-color-tint);
-  border-radius: 1rem;
+  border-radius: 0.3rem;
 }
 
 .restaurant__information {
-  padding-top: 1rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .restaurant__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
-.restaurant__information__title {
-  font-size: 1.8rem;
+.restaurant__notes {
+  padding-top: 1rem;
+  font-size: 1.4rem;
+}
+
+.restaurant__notes:empty {
+  display: none;
 }
 
 .restaurant__icon-container {
@@ -342,8 +344,13 @@ textarea:focus {
   color: red;
 }
 
-.restaurant__information__data {
-  font-size: 1.4rem;
+.restaurant__data {
+  font-size: 1.5rem;
+  line-height: 1em;
+}
+
+.star-emoji {
+  font-size: 2rem;
 }
 
 .hidden {

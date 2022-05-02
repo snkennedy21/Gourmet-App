@@ -246,27 +246,23 @@ class App {
           }</h1>
           <div class="restaurant__icon-container">
             <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
-            <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon>
+            <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
           </div>
         </div>
         <div class="restaurant__information">
-          <div class="restaurant__information__section">
-            <h2 class="restaurant__information__title">Type</h2>
-            <p class="restaurant__information__data">${
+          <div class="restaurant__data-container>
+            <p class="restaurant__data"><span class="star-emoji">${this.star.repeat(
+              this.#filteredRestaurantsArray[i].rating
+            )}</span></p>
+            <p class="restaurant__data">${
               this.#filteredRestaurantsArray[i].type
             }</p>
-          </div>
-          <div class="restaurant__information__section">
-            <h2 class="restaurant__information__title">Rating</h2>
-            <p class="restaurant__information__data">${this.star.repeat(
-              this.#filteredRestaurantsArray[i].rating
-            )}</p>
-          </div>
-          <div class="restaurant__information__section">
-            <h2 class="restaurant__information__title">Distance</h2>
-            <p class="restaurant__information__data">${
+            <p class="restaurant__data">${
               this.#filteredRestaurantsArray[i].distance
-            } Kilometers</p>
+            } Km</p>
+            <p class="restaurant__notes">${
+              this.#filteredRestaurantsArray[i].notes
+            }</p>
           </div>
         </div>
       </div>`;
@@ -503,21 +499,13 @@ class App {
         </div>
       </div>
       <div class="restaurant__information">
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Type</h2>
-          <p class="restaurant__information__data">${restaurant.type}</p>
-        </div>
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Rating</h2>
-          <p class="restaurant__information__data">${this.star.repeat(
+        <div class="restaurant__data-container>
+          <p class="restaurant__data"><span class="star-emoji">${this.star.repeat(
             restaurant.rating
-          )}</p>
-        </div>
-        <div class="restaurant__information__section">
-          <h2 class="restaurant__information__title">Distance</h2>
-          <p class="restaurant__information__data">${
-            restaurant.distance
-          } Kilometers</p>
+          )}</span></p>
+          <p class="restaurant__data">${restaurant.type}</p>
+          <p class="restaurant__data">${restaurant.distance} Km</p>
+          <p class="restaurant__notes">${restaurant.notes}</p>
         </div>
       </div>
     </div>`;
