@@ -33,6 +33,11 @@ const modalTutorialContainer = document.querySelector(
 const allModalTutorialContainers = document.querySelectorAll(
   ".modal__tutorial-container"
 );
+const paginationButtonRight = document.querySelector(
+  ".pagination-button__right"
+);
+const paginationButtonLeft = document.querySelector(".pagination-button__left");
+const paginationButtonDone = document.querySelector(".pagination-button__done");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -71,6 +76,7 @@ class App {
   #markerArray = [];
   #filteredRestaurantsArray;
   #filteredMarkerArray;
+  #tutorialSlideIndex = 0;
   constructor() {
     this._getPosition();
 
@@ -117,9 +123,67 @@ class App {
       "click",
       this._startTutorial.bind(this)
     );
+    paginationButtonRight.addEventListener(
+      "click",
+      this._goToNextTutorialSlide.bind(this)
+    );
+    paginationButtonLeft.addEventListener(
+      "click",
+      this._goToPreviousTutorialSlide.bind(this)
+    );
+    paginationButtonDone.addEventListener(
+      "click",
+      this._resetTutorial.bind(this)
+    );
   }
 
-  _startTutorial() {}
+  _updateTutorialSlide() {
+    allModalTutorialContainers.forEach((el, i) => {
+      if (this.#tutorialSlideIndex === i)
+        allModalTutorialContainers[i].classList.remove("hidden");
+      if (this.#tutorialSlideIndex !== i)
+        allModalTutorialContainers[i].classList.add("hidden");
+    });
+  }
+
+  _goToNextTutorialSlide() {
+    this.#tutorialSlideIndex++;
+    if (this.#tutorialSlideIndex === allModalTutorialContainers.length - 1) {
+      paginationButtonRight.classList.add("hidden");
+      paginationButtonDone.classList.remove("hidden");
+    }
+    this._updateTutorialSlide();
+  }
+
+  _goToPreviousTutorialSlide() {
+    this.#tutorialSlideIndex--;
+    if (this.#tutorialSlideIndex < 0) {
+      this.#tutorialSlideIndex = 0;
+    }
+    if (this.#tutorialSlideIndex < allModalTutorialContainers.length - 1) {
+      paginationButtonRight.classList.remove("hidden");
+      paginationButtonDone.classList.add("hidden");
+    }
+    this._updateTutorialSlide();
+  }
+
+  _resetTutorial() {
+    this.#tutorialSlideIndex = 0;
+    document
+      .querySelector(".modal__intro-container")
+      .classList.remove("hidden");
+    paginationButtonLeft.classList.add("hidden");
+    paginationButtonDone.classList.add("hidden");
+    allModalTutorialContainers.forEach((el) => el.classList.add("hidden"));
+    this._closeModal();
+  }
+
+  _startTutorial() {
+    document.querySelector(".modal__intro-container").classList.add("hidden");
+    modalTutorialContainer.classList.remove("hidden");
+    paginationButtonLeft.classList.remove("hidden");
+    paginationButtonRight.classList.remove("hidden");
+  }
 
   _closeModal() {
     modalWrap.classList.add("hidden");
@@ -140,6 +204,7 @@ class App {
     this.#selectedType = sidebarSelectorType.value;
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance !== 0 &&
       this.#selectedRating !== 0 &&
       this.#selectedType != 0
@@ -160,6 +225,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance !== 0 &&
       this.#selectedRating === 0 &&
       this.#selectedType == 0
@@ -173,6 +239,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance === 0 &&
       this.#selectedRating !== 0 &&
       this.#selectedType == 0
@@ -186,6 +253,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance === 0 &&
       this.#selectedRating === 0 &&
       this.#selectedType != 0
@@ -199,6 +267,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance !== 0 &&
       this.#selectedRating === 0 &&
       this.#selectedType != 0
@@ -216,6 +285,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance !== 0 &&
       this.#selectedRating !== 0 &&
       this.#selectedType == 0
@@ -233,6 +303,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance === 0 &&
       this.#selectedRating !== 0 &&
       this.#selectedType != 0
@@ -248,6 +319,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance === 0 &&
       this.#selectedRating === 0 &&
       this.#selectedType == 0
@@ -260,6 +332,8 @@ class App {
     if (this.#selectedSorting === "distance") this._sortByDistance();
     if (this.#selectedSorting === "rating") this._sortByRating();
 
+    console.log(this.#markerArray);
+    console.log(this.#filteredMarkerArray);
     this._displayFilteredMarkers();
   }
 
@@ -319,7 +393,6 @@ class App {
         return -1;
       }
     }
-    console.log("hello");
     this.#filteredRestaurantsArray.sort(compare.bind(this));
     this._sortHTML();
   }
@@ -346,8 +419,12 @@ class App {
       const restaurantMarker = this.#markerArray.find(
         (el) => el.id === restaurantEl.dataset.id
       );
-      const index = this.#restaurantsArray.indexOf(restaurant);
-      this.#restaurantsArray.splice(index, 1);
+      const restaurantIndex = this.#restaurantsArray.indexOf(restaurant);
+      const markerIndex = this.#markerArray.indexOf(restaurantMarker);
+      console.log(this.#markerArray);
+      this.#restaurantsArray.splice(restaurantIndex, 1);
+      this.#markerArray.splice(markerIndex, 1);
+      console.log(this.#markerArray);
       restaurantEl.remove();
       this.#map.removeLayer(restaurantMarker);
       this._setLocalStorage();
@@ -358,7 +435,6 @@ class App {
     if (e.target.classList.contains("restaurant__icon__nav")) {
       this._toggleSidebar();
       const restaurantEl = e.target.closest(".restaurant");
-      console.log(restaurantEl);
 
       const restaurant = this.#restaurantsArray.find(
         (el) => el.id === restaurantEl.dataset.id
@@ -441,11 +517,8 @@ class App {
         this.#mapEvent.latlng.distanceTo(this.#currentLocation) / 100
       ) / 10;
 
-    console.log(distance);
-
     starWidgets.forEach((widget, i) => {
       if (widget.checked) {
-        console.log(starWidgets[i].getAttribute("id"));
         if (starWidgets[i].getAttribute("id") === "rate-5") {
           this.#rating = 5;
         }

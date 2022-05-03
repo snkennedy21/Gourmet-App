@@ -10,8 +10,9 @@
   --color-primary: #ffdb58;
   --color-primary-light: #ffdf69;
   --color-primary-dark: #e6c54f;
+  --color-primary-lightest: #fffbee;
   --dark-color: #404040;
-  --dark-color-tint: #666666;
+  --dark-color-tint: #7a7a7a;
   --light-color: #ececec;
 }
 
@@ -20,16 +21,15 @@ html {
 }
 
 body {
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100vh;
   overflow: hidden;
+  margin: 1rem auto;
 }
 
 .application {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 8fr;
@@ -65,10 +65,10 @@ body {
 }
 
 .tools {
-  width: 20rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
 }
 
 .tools-icon {
@@ -155,7 +155,7 @@ body {
 .form__input,
 .form__input--notes {
   width: 100%;
-  padding: 1rem 1rem;
+  padding: 1rem;
   font-size: 1.6rem;
   border: none;
   background-color: #a6a6a6;
@@ -251,6 +251,8 @@ textarea:focus {
 
 .sidebar__heading {
   text-align: center;
+  font-size: 3.2rem;
+  color: var(--color-primary);
 }
 
 .sidebar__selector-container {
@@ -263,11 +265,15 @@ textarea:focus {
 
 .sidebar__selector-title {
   font-size: 1.6rem;
+  color: var(--light-color);
 }
 
 .sidebar__selector {
   padding: 1rem 0.5rem;
-  width: 70%;
+  width: 80%;
+  background-color: var(--light-color);
+  border: none;
+  border-radius: 0.2rem;
 }
 
 .sidebar__restaurants-container {
@@ -280,7 +286,7 @@ textarea:focus {
 }
 
 .sidebar.translate {
-  transform: translateX(100%);
+  transform: translateX(110%);
 }
 
 .sidebar__close-button {
@@ -292,7 +298,7 @@ textarea:focus {
 
 .sidebar__close-button:hover {
   cursor: pointer;
-  color: red;
+  color: rgb(208, 4, 4);
 }
 
 .restaurant {
@@ -329,6 +335,21 @@ textarea:focus {
   gap: 2rem;
 }
 
+.restaurant__icon-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.restaurant__icon__nav:hover {
+  cursor: pointer;
+  color: var(--color-primary);
+}
+
+.restaurant__icon__trash:hover {
+  cursor: pointer;
+  color: rgb(208, 4, 4);
+}
+
 .restaurant__icon {
   width: 2rem;
   height: 2rem;
@@ -341,7 +362,7 @@ textarea:focus {
 
 .restaurant__icon__trash:hover {
   cursor: pointer;
-  color: red;
+  color: rgb(208, 4, 4);
 }
 
 .restaurant__data {
@@ -399,6 +420,7 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
+  gap: 1rem;
 }
 
 .modal-icon {
@@ -423,7 +445,7 @@ textarea:focus {
 .modal__intro-button__container {
   right: 50%;
   transform: translateX(50%);
-  bottom: 20%;
+  bottom: 5%;
   position: absolute;
   padding-top: 2rem;
   display: flex;
@@ -452,12 +474,13 @@ textarea:focus {
 }
 
 .image {
-  width: 70%;
+  width: 60%;
 }
 
 .modal__step {
   text-align: center;
   font-size: 2.4rem;
+  padding-bottom: 2rem;
 }
 
 .pagination-button {
@@ -469,11 +492,13 @@ textarea:focus {
   border: none;
   width: 4rem;
   height: 4rem;
-  top: 50%;
+  bottom: 5%;
 }
 
 .pagination-button:hover {
   cursor: pointer;
+  background-color: var(--color-primary);
+  color: white;
 }
 
 .pagination-icon {
@@ -482,12 +507,17 @@ textarea:focus {
 }
 
 .pagination-button__right {
-  right: 0;
-  transform: translate(50%, -50%);
+  transform: translate(120%, 0);
+  right: 50%;
 }
 .pagination-button__left {
-  left: 0;
-  transform: translate(-50%, -50%);
+  transform: translate(-20%, 0);
+  right: 50%;
+}
+
+.pagination-button__done {
+  transform: translate(120%, 0);
+  right: 50%;
 }
 
 /* /////////////////// */
@@ -496,8 +526,4 @@ textarea:focus {
 
 .hidden {
   display: none;
-}
-
-.restaurant__icon__trash {
-  color: red;
 }

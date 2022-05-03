@@ -9,6 +9,7 @@
     integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
     crossorigin="" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="querries.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
   <script defer src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
     integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
@@ -28,6 +29,9 @@
       <button class="pagination-button pagination-button__left hidden">
         <ion-icon class="pagination-icon" name="chevron-back-outline"></ion-icon>
       </button>
+      <button class="pagination-button pagination-button__done hidden">
+        <ion-icon class="pagination-icon" name="thumbs-up-outline"></ion-icon>
+      </button>
       <div class="modal__header-container">
         <ion-icon class="modal-icon" name="restaurant-sharp"></ion-icon>
         <h1 class="modal-header">Gourmet</h1>
@@ -38,7 +42,7 @@
           know, then jump right in.
         </p>
         <div class="modal__intro-button__container">
-          <button class="modal__intro-button modal__intro-button--close">I Got It</button>
+          <button class="modal__intro-button modal__intro-button--close">I've Got It</button>
           <button class="modal__intro-button modal__intro-button--learn">Learn More</button>
         </div>
       </div>
@@ -93,6 +97,7 @@
       </div>
     </div>
   </div>
+
   <div class="application">
     <header class="header-section">
       <div class="header-container">
@@ -107,9 +112,8 @@
     </header>
 
     <div id="map"></div>
-  </div>
-  <div class="sidebar translate">
-    <div class="x">
+
+    <div class="sidebar translate">
       <ion-icon class="sidebar__close-button" name="close-outline"></ion-icon>
       <h1 class="sidebar__heading">My Restaurants</h1>
       <div class="sidebar__container">
@@ -163,12 +167,11 @@
           </select>
         </div>
       </div>
-    </div>
-    <div class="sidebar__restaurants-container">
-      <div class="sidebar__restaurants__el__alpha"></div>
+      <div class="sidebar__restaurants-container">
+        <div class="sidebar__restaurants__el__alpha"></div>
+      </div>
     </div>
   </div>
-
 
   <div class="form-container hidden">
     <form class="form" action="">
@@ -223,7 +226,6 @@
         </div>
         <button class="form__button" type="submit">Submit</button>
       </div>
-
     </form>
   </div>
 </body>
