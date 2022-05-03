@@ -409,8 +409,10 @@ class App {
       const restaurantMarker = this.#markerArray.find(
         (el) => el.id === restaurantEl.dataset.id
       );
+      console.log(this.#markerArray);
       const index = this.#restaurantsArray.indexOf(restaurant);
       this.#restaurantsArray.splice(index, 1);
+      this.#markerArray.splice(index, 1);
       restaurantEl.remove();
       this.#map.removeLayer(restaurantMarker);
       this._setLocalStorage();
