@@ -1,0 +1,123 @@
+/* //////////// */
+/* Below 1024px */
+/* //////////// */
+
+@media (max-width: 64em) {
+  .modal {
+    height: 60vh;
+  }
+
+  .sidebar {
+    width: 50%;
+  }
+
+  .form {
+    height: 70vh;
+  }
+}
+
+/* /////////// */
+/* Below 800px */
+/* /////////// */
+
+@media (max-width: 50em) {
+  .image {
+    width: 80%;
+  }
+
+  .form {
+    width: 70%;
+  }
+}
+
+/* /////////// */
+/* Below 600px */
+/* /////////// */
+
+@media (max-width: 37.5em) {
+  .form {
+    width: 90%;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .sidebar.translate {
+    transform: translateX(110%);
+  }
+}
+
+/* /////////// */
+/* Below 480px */
+/* /////////// */
+
+@media (max-width: 30em) {
+  .header-section {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .tools {
+    justify-content: center;
+    gap: 4rem;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .tools-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .modal {
+    width: 80%;
+    height: 60vh;
+  }
+
+  .modal-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .modal-header {
+    font-size: 3.2rem;
+  }
+
+  .modal__intro-text {
+    font-size: 2rem;
+  }
+
+  .form {
+    padding: 1rem 0;
+  }
+
+  .form__section-container {
+    width: 70%;
+    gap: 1rem;
+  }
+
+  .star-widget label {
+    font-size: 3rem;
+  }
+
+  .form__header {
+    font-size: 3.2rem;
+  }
+
+  .form__header-icon {
+    width: 3rem;
+    width: 3rem;
+  }
+
+  .form__label {
+    font-size: 1.2rem;
+  }
+
+  .form__input {
+    font-size: 1.2rem;
+    padding: 0.7rem;
+  }
+}
