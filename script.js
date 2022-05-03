@@ -203,6 +203,7 @@ class App {
     this.#selectedType = sidebarSelectorType.value;
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance !== 0 &&
       this.#selectedRating !== 0 &&
       this.#selectedType != 0
@@ -223,6 +224,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance !== 0 &&
       this.#selectedRating === 0 &&
       this.#selectedType == 0
@@ -236,6 +238,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance === 0 &&
       this.#selectedRating !== 0 &&
       this.#selectedType == 0
@@ -249,6 +252,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance === 0 &&
       this.#selectedRating === 0 &&
       this.#selectedType != 0
@@ -262,6 +266,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance !== 0 &&
       this.#selectedRating === 0 &&
       this.#selectedType != 0
@@ -279,6 +284,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance !== 0 &&
       this.#selectedRating !== 0 &&
       this.#selectedType == 0
@@ -296,6 +302,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance === 0 &&
       this.#selectedRating !== 0 &&
       this.#selectedType != 0
@@ -311,6 +318,7 @@ class App {
     }
 
     if (
+      this.#selectedSorting !== 0 &&
       this.#selectedDistance === 0 &&
       this.#selectedRating === 0 &&
       this.#selectedType == 0
@@ -323,6 +331,8 @@ class App {
     if (this.#selectedSorting === "distance") this._sortByDistance();
     if (this.#selectedSorting === "rating") this._sortByRating();
 
+    console.log(this.#markerArray);
+    console.log(this.#filteredMarkerArray);
     this._displayFilteredMarkers();
   }
 
@@ -382,7 +392,6 @@ class App {
         return -1;
       }
     }
-    console.log("hello");
     this.#filteredRestaurantsArray.sort(compare.bind(this));
     this._sortHTML();
   }
@@ -409,10 +418,12 @@ class App {
       const restaurantMarker = this.#markerArray.find(
         (el) => el.id === restaurantEl.dataset.id
       );
+      const restaurantIndex = this.#restaurantsArray.indexOf(restaurant);
+      const markerIndex = this.#markerArray.indexOf(restaurantMarker);
       console.log(this.#markerArray);
-      const index = this.#restaurantsArray.indexOf(restaurant);
-      this.#restaurantsArray.splice(index, 1);
-      this.#markerArray.splice(index, 1);
+      this.#restaurantsArray.splice(restaurantIndex, 1);
+      this.#markerArray.splice(markerIndex, 1);
+      console.log(this.#markerArray);
       restaurantEl.remove();
       this.#map.removeLayer(restaurantMarker);
       this._setLocalStorage();
@@ -423,7 +434,6 @@ class App {
     if (e.target.classList.contains("restaurant__icon__nav")) {
       this._toggleSidebar();
       const restaurantEl = e.target.closest(".restaurant");
-      console.log(restaurantEl);
 
       const restaurant = this.#restaurantsArray.find(
         (el) => el.id === restaurantEl.dataset.id
@@ -506,11 +516,8 @@ class App {
         this.#mapEvent.latlng.distanceTo(this.#currentLocation) / 100
       ) / 10;
 
-    console.log(distance);
-
     starWidgets.forEach((widget, i) => {
       if (widget.checked) {
-        console.log(starWidgets[i].getAttribute("id"));
         if (starWidgets[i].getAttribute("id") === "rate-5") {
           this.#rating = 5;
         }
