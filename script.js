@@ -40,6 +40,7 @@ const paginationButtonLeft = document.querySelector(".pagination-button__left");
 const paginationButtonDone = document.querySelector(".pagination-button__done");
 
 class Restaurant {
+  id = (Date.now() + "").slice(-10);
   clicks = 0;
   star = "<span>⭐</span>";
   constructor(name, type, rating, notes, coords, distance) {
@@ -536,7 +537,7 @@ class App {
       distance
     );
 
-    this._renderRestaurantMarker(restaurant);
+    this.#restaurantsArray.push(restaurant);
 
     this._newRestaurantFile(restaurant);
 
