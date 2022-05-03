@@ -469,11 +469,13 @@ textarea:focus {
   border: none;
   width: 4rem;
   height: 4rem;
-  top: 50%;
+  bottom: 5%;
 }
 
 .pagination-button:hover {
   cursor: pointer;
+  background-color: var(--color-primary);
+  color: white;
 }
 
 .pagination-icon {
@@ -482,12 +484,17 @@ textarea:focus {
 }
 
 .pagination-button__right {
-  right: 0;
-  transform: translate(50%, -50%);
+  transform: translate(120%, 0);
+  right: 50%;
 }
 .pagination-button__left {
-  left: 0;
-  transform: translate(-50%, -50%);
+  transform: translate(-20%, 0);
+  right: 50%;
+}
+
+.pagination-button__done {
+  transform: translate(120%, 0);
+  right: 50%;
 }
 
 /* /////////////////// */

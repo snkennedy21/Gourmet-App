@@ -33,6 +33,11 @@ const modalTutorialContainer = document.querySelector(
 const allModalTutorialContainers = document.querySelectorAll(
   ".modal__tutorial-container"
 );
+const paginationButtonRight = document.querySelector(
+  ".pagination-button__right"
+);
+const paginationButtonLeft = document.querySelector(".pagination-button__left");
+const paginationButtonDone = document.querySelector(".pagination-button__done");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -71,6 +76,7 @@ class App {
   #markerArray = [];
   #filteredRestaurantsArray;
   #filteredMarkerArray;
+  #tutorialSlideIndex = 0;
   constructor() {
     this._getPosition();
 
@@ -117,9 +123,67 @@ class App {
       "click",
       this._startTutorial.bind(this)
     );
+    paginationButtonRight.addEventListener(
+      "click",
+      this._goToNextTutorialSlide.bind(this)
+    );
+    paginationButtonLeft.addEventListener(
+      "click",
+      this._goToPreviousTutorialSlide.bind(this)
+    );
+    paginationButtonDone.addEventListener(
+      "click",
+      this._resetTutorial.bind(this)
+    );
   }
 
-  _startTutorial() {}
+  _updateTutorialSlide() {
+    allModalTutorialContainers.forEach((el, i) => {
+      if (this.#tutorialSlideIndex === i)
+        allModalTutorialContainers[i].classList.remove("hidden");
+      if (this.#tutorialSlideIndex !== i)
+        allModalTutorialContainers[i].classList.add("hidden");
+    });
+  }
+
+  _goToNextTutorialSlide() {
+    this.#tutorialSlideIndex++;
+    if (this.#tutorialSlideIndex === allModalTutorialContainers.length - 1) {
+      paginationButtonRight.classList.add("hidden");
+      paginationButtonDone.classList.remove("hidden");
+    }
+    this._updateTutorialSlide();
+  }
+
+  _goToPreviousTutorialSlide() {
+    this.#tutorialSlideIndex--;
+    if (this.#tutorialSlideIndex < 0) {
+      this.#tutorialSlideIndex = 0;
+    }
+    if (this.#tutorialSlideIndex < allModalTutorialContainers.length - 1) {
+      paginationButtonRight.classList.remove("hidden");
+      paginationButtonDone.classList.add("hidden");
+    }
+    this._updateTutorialSlide();
+  }
+
+  _resetTutorial() {
+    this.#tutorialSlideIndex = 0;
+    document
+      .querySelector(".modal__intro-container")
+      .classList.remove("hidden");
+    paginationButtonLeft.classList.add("hidden");
+    paginationButtonDone.classList.add("hidden");
+    allModalTutorialContainers.forEach((el) => el.classList.add("hidden"));
+    this._closeModal();
+  }
+
+  _startTutorial() {
+    document.querySelector(".modal__intro-container").classList.add("hidden");
+    modalTutorialContainer.classList.remove("hidden");
+    paginationButtonLeft.classList.remove("hidden");
+    paginationButtonRight.classList.remove("hidden");
+  }
 
   _closeModal() {
     modalWrap.classList.add("hidden");
