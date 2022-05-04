@@ -66,8 +66,6 @@ class App {
   #rating;
   star = "<span>⭐</span>";
   #openPopup = false;
-  sortedBestToWorst = false;
-  sortedClosestToFarthest = false;
   #currentLocationLatitude;
   #currentLocationLongitude;
   #currentLocation;
@@ -139,6 +137,128 @@ class App {
       this._resetTutorial.bind(this)
     );
     document.addEventListener("click", this._closeForm.bind(this));
+  }
+
+  _getPosition() {
+    if (navigator.geolocation)
+      navigator.geolocation.getCurrentPosition(
+        this._buildMap.bind(this),
+        function () {
+          alert("could not find your location");
+        }
+      );
+  }
+
+  _buildMap(position) {
+    this.#currentLocationLatitude = position.coords.latitude;
+    this.#currentLocationLongitude = position.coords.longitude;
+    this.#currentLocation = [
+      this.#currentLocationLatitude,
+      this.#currentLocationLongitude,
+    ];
+
+    this.#map = L.map("map").setView(this.#currentLocation, 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.#map);
+
+    this.#map.on("click", this._displayForm.bind(this));
+
+    this.#restaurantsArray.forEach((restaurant) => {
+      this._renderRestaurantMarker(restaurant);
+    });
+  }
+
+  _displayForm(mapE) {
+    this.#mapEvent = mapE;
+    formContainer.classList.remove("hidden");
+  }
+
+  _newRestaurant(e) {
+    e.preventDefault();
+    const { lat, lng } = this.#mapEvent.latlng;
+    const clickLocation = [lat, lng];
+
+    const distance =
+      Math.round(
+        this.#mapEvent.latlng.distanceTo(this.#currentLocation) / 100
+      ) / 10;
+
+    starWidgets.forEach((widget, i) => {
+      if (widget.checked) {
+        if (starWidgets[i].getAttribute("id") === "rate-5") {
+          this.#rating = 5;
+        }
+        if (starWidgets[i].getAttribute("id") === "rate-4") {
+          this.#rating = 4;
+        }
+        if (starWidgets[i].getAttribute("id") === "rate-3") {
+          this.#rating = 3;
+        }
+        if (starWidgets[i].getAttribute("id") === "rate-2") {
+          this.#rating = 2;
+        }
+        if (starWidgets[i].getAttribute("id") === "rate-1") {
+          this.#rating = 1;
+        }
+      }
+    });
+
+    // Build a new restaurant
+    const restaurantName = formInputName.value
+      .toLowerCase()
+      .split(" ")
+      .map((string) => string.charAt(0).toUpperCase() + string.substring(1))
+      .join(" ");
+    let restaurant = new Restaurant(
+      restaurantName,
+      formInputType.value,
+      this.#rating,
+      formInputNotes.value,
+      [lat, lng],
+      distance
+    );
+
+    this.#restaurantsArray.push(restaurant);
+
+    this._newRestaurantFile(restaurant);
+
+    this.#openPopup = true;
+
+    this._renderRestaurantMarker(restaurant);
+
+    this._clearForm();
+
+    this._setLocalStorage();
+  }
+
+  _renderRestaurantMarker(restaurant) {
+    const marker = new L.Marker(restaurant.coords);
+    marker.rating = restaurant.rating;
+    marker.distance = restaurant.distance;
+    marker.type = restaurant.type;
+    this.#map.addLayer(marker);
+    marker
+      .bindPopup(
+        L.popup({
+          maxWidth: 300,
+          minWidth: 50,
+          closeOnClick: false,
+          className: `${restaurant.type}-popup`,
+        })
+      )
+      .setPopupContent(
+        String(
+          `<span>${restaurant.name}</span> <p>${this.star.repeat(
+            restaurant.rating
+          )}</p>`
+        )
+      );
+    if (this.#openPopup) marker.openPopup();
+    marker.id = restaurant.id;
+    this.#markerArray.push(marker);
   }
 
   _closeForm(e) {
@@ -489,123 +609,6 @@ class App {
     this.#map.setView(this.#currentLocation, 13);
   }
 
-  _buildMap(position) {
-    this.#currentLocationLatitude = position.coords.latitude;
-    this.#currentLocationLongitude = position.coords.longitude;
-    this.#currentLocation = [
-      this.#currentLocationLatitude,
-      this.#currentLocationLongitude,
-    ];
-
-    this.#map = L.map("map").setView(this.#currentLocation, 13);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(this.#map);
-
-    this.#map.on("click", this._displayForm.bind(this));
-
-    this.#restaurantsArray.forEach((restaurant) => {
-      this._renderRestaurantMarker(restaurant);
-    });
-  }
-
-  _getPosition() {
-    if (navigator.geolocation)
-      navigator.geolocation.getCurrentPosition(
-        this._buildMap.bind(this),
-        function () {
-          alert("could not find your location");
-        }
-      );
-  }
-
-  _newRestaurant(e) {
-    e.preventDefault();
-    const { lat, lng } = this.#mapEvent.latlng;
-    const clickLocation = [lat, lng];
-
-    const distance =
-      Math.round(
-        this.#mapEvent.latlng.distanceTo(this.#currentLocation) / 100
-      ) / 10;
-
-    starWidgets.forEach((widget, i) => {
-      if (widget.checked) {
-        if (starWidgets[i].getAttribute("id") === "rate-5") {
-          this.#rating = 5;
-        }
-        if (starWidgets[i].getAttribute("id") === "rate-4") {
-          this.#rating = 4;
-        }
-        if (starWidgets[i].getAttribute("id") === "rate-3") {
-          this.#rating = 3;
-        }
-        if (starWidgets[i].getAttribute("id") === "rate-2") {
-          this.#rating = 2;
-        }
-        if (starWidgets[i].getAttribute("id") === "rate-1") {
-          this.#rating = 1;
-        }
-      }
-    });
-
-    // Build a new restaurant
-    const restaurantName = formInputName.value
-      .toLowerCase()
-      .split(" ")
-      .map((string) => string.charAt(0).toUpperCase() + string.substring(1))
-      .join(" ");
-    let restaurant = new Restaurant(
-      restaurantName,
-      formInputType.value,
-      this.#rating,
-      formInputNotes.value,
-      [lat, lng],
-      distance
-    );
-
-    this.#restaurantsArray.push(restaurant);
-
-    this._newRestaurantFile(restaurant);
-
-    this.#openPopup = true;
-
-    this._renderRestaurantMarker(restaurant);
-
-    this._clearForm();
-
-    this._setLocalStorage();
-  }
-
-  _renderRestaurantMarker(restaurant) {
-    const marker = new L.Marker(restaurant.coords);
-    marker.rating = restaurant.rating;
-    marker.distance = restaurant.distance;
-    marker.type = restaurant.type;
-    this.#map.addLayer(marker);
-    marker
-      .bindPopup(
-        L.popup({
-          maxWidth: 300,
-          minWidth: 50,
-          closeOnClick: false,
-          className: `${restaurant.type}-popup`,
-        })
-      )
-      .setPopupContent(
-        String(
-          `<span>${restaurant.name}</span> <p>${this.star.repeat(
-            restaurant.rating
-          )}</p>`
-        )
-      );
-    if (this.#openPopup) marker.openPopup();
-    marker.id = restaurant.id;
-    this.#markerArray.push(marker);
-  }
-
   _newRestaurantFile(restaurant) {
     let html = `
     <div class="restaurant" data-id="${restaurant.id}" 
@@ -634,11 +637,6 @@ class App {
     document
       .querySelector(".sidebar__restaurants__el__alpha")
       .insertAdjacentHTML("afterend", html);
-  }
-
-  _displayForm(mapE) {
-    this.#mapEvent = mapE;
-    formContainer.classList.remove("hidden");
   }
 
   _setLocalStorage() {
