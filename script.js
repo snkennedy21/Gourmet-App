@@ -38,6 +38,7 @@ const paginationButtonRight = document.querySelector(
 );
 const paginationButtonLeft = document.querySelector(".pagination-button__left");
 const paginationButtonDone = document.querySelector(".pagination-button__done");
+const formButtonDiscard = document.querySelector(".form__button-discard");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -135,6 +136,7 @@ class App {
       "click",
       this._resetTutorial.bind(this)
     );
+    formButtonDiscard.addEventListener("click", this._clearForm.bind(this));
   }
 
   _updateTutorialSlide() {

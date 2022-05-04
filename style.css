@@ -212,6 +212,13 @@ textarea:focus {
   text-shadow: 0 0 2rem #952;
 }
 
+.form__button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .form__button {
   margin-top: 2rem;
   border: none;
