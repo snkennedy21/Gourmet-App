@@ -186,23 +186,12 @@ class App {
         this.#mapEvent.latlng.distanceTo(this.#currentLocation) / 100
       ) / 10;
 
-    starWidgets.forEach((widget, i) => {
-      if (widget.checked) {
-        if (starWidgets[i].getAttribute("id") === "rate-5") {
-          this.#rating = 5;
-        }
-        if (starWidgets[i].getAttribute("id") === "rate-4") {
-          this.#rating = 4;
-        }
-        if (starWidgets[i].getAttribute("id") === "rate-3") {
-          this.#rating = 3;
-        }
-        if (starWidgets[i].getAttribute("id") === "rate-2") {
-          this.#rating = 2;
-        }
-        if (starWidgets[i].getAttribute("id") === "rate-1") {
-          this.#rating = 1;
-        }
+    const starArray = Array.from(starWidgets);
+
+    starWidgets.forEach((el, i) => {
+      if (el.checked) {
+        console.log(starWidgets[i].getAttribute("id"));
+        this.#rating = Number(starWidgets[i].getAttribute("id").slice(-1));
       }
     });
 
