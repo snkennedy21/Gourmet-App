@@ -171,8 +171,8 @@ class App {
     });
   }
 
-  _displayForm(mapE) {
-    this.#mapEvent = mapE;
+  _displayForm(e) {
+    this.#mapEvent = e;
     formContainer.classList.remove("hidden");
   }
 
@@ -186,11 +186,8 @@ class App {
         this.#mapEvent.latlng.distanceTo(this.#currentLocation) / 100
       ) / 10;
 
-    const starArray = Array.from(starWidgets);
-
     starWidgets.forEach((el, i) => {
       if (el.checked) {
-        console.log(starWidgets[i].getAttribute("id"));
         this.#rating = Number(starWidgets[i].getAttribute("id").slice(-1));
       }
     });
@@ -460,41 +457,45 @@ class App {
     this._displayFilteredMarkers();
   }
 
+  _generateHTML(restaurant) {
+    let html = `
+    <div class="restaurant" data-id="${restaurant.id}" 
+      data-rating="${restaurant.rating}"
+      data-distance="${restaurant.distance}"
+      data-type="${restaurant.type}"">
+      <div class="restaurant__header">
+        <h1 class="restaurant__title">${restaurant.name}</h1>
+        <div class="restaurant__icon-container">
+          <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
+          <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
+        </div>
+      </div>
+      <div class="restaurant__information">
+        <div class="restaurant__data-container>
+          <p class="restaurant__data"><span class="star-emoji">${this.star.repeat(
+            restaurant.rating
+          )}</span></p>
+          <p class="restaurant__data">${restaurant.type}</p>
+          <p class="restaurant__data">${restaurant.distance} Km</p>
+          <p class="restaurant__notes">${restaurant.notes}</p>
+        </div>
+      </div>
+    </div>`;
+
+    document
+      .querySelector(".sidebar__restaurants__el__alpha")
+      .insertAdjacentHTML("afterend", html);
+  }
+
+  _newRestaurantFile(restaurant) {
+    this._generateHTML(restaurant);
+  }
+
   _sortHTML() {
     sidebarRestaurantsContainer.innerHTML =
       "<div class=sidebar__restaurants__el__alpha></div>";
     this.#filteredRestaurantsArray.forEach((el, i) => {
-      let html = `
-      <div class="restaurant" data-id="${this.#filteredRestaurantsArray[i].id}">
-        <div class="restaurant__header">
-          <h1 class="restaurant__title">${
-            this.#filteredRestaurantsArray[i].name
-          }</h1>
-          <div class="restaurant__icon-container">
-            <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
-            <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
-          </div>
-        </div>
-        <div class="restaurant__information">
-          <div class="restaurant__data-container>
-            <p class="restaurant__data"><span class="star-emoji">${this.star.repeat(
-              this.#filteredRestaurantsArray[i].rating
-            )}</span></p>
-            <p class="restaurant__data">${
-              this.#filteredRestaurantsArray[i].type
-            }</p>
-            <p class="restaurant__data">${
-              this.#filteredRestaurantsArray[i].distance
-            } Km</p>
-            <p class="restaurant__notes">${
-              this.#filteredRestaurantsArray[i].notes
-            }</p>
-          </div>
-        </div>
-      </div>`;
-      document
-        .querySelector(".sidebar__restaurants__el__alpha")
-        .insertAdjacentHTML("afterend", html);
+      this._generateHTML(this.#filteredRestaurantsArray[i]);
     });
   }
 
@@ -596,36 +597,6 @@ class App {
 
   _moveToCurrentPosition() {
     this.#map.setView(this.#currentLocation, 13);
-  }
-
-  _newRestaurantFile(restaurant) {
-    let html = `
-    <div class="restaurant" data-id="${restaurant.id}" 
-      data-rating="${restaurant.rating}"
-      data-distance="${restaurant.distance}"
-      data-type="${restaurant.type}"">
-      <div class="restaurant__header">
-        <h1 class="restaurant__title">${restaurant.name}</h1>
-        <div class="restaurant__icon-container">
-          <ion-icon class="restaurant__icon restaurant__icon__nav" name="navigate-outline"></ion-icon>
-          <ion-icon class="restaurant__icon restaurant__icon__trash" name="trash-outline"></ion-icon> 
-        </div>
-      </div>
-      <div class="restaurant__information">
-        <div class="restaurant__data-container>
-          <p class="restaurant__data"><span class="star-emoji">${this.star.repeat(
-            restaurant.rating
-          )}</span></p>
-          <p class="restaurant__data">${restaurant.type}</p>
-          <p class="restaurant__data">${restaurant.distance} Km</p>
-          <p class="restaurant__notes">${restaurant.notes}</p>
-        </div>
-      </div>
-    </div>`;
-
-    document
-      .querySelector(".sidebar__restaurants__el__alpha")
-      .insertAdjacentHTML("afterend", html);
   }
 
   _setLocalStorage() {
