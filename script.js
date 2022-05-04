@@ -38,7 +38,9 @@ const paginationButtonRight = document.querySelector(
 );
 const paginationButtonLeft = document.querySelector(".pagination-button__left");
 const paginationButtonDone = document.querySelector(".pagination-button__done");
-const formButtonDiscard = document.querySelector(".form__button-discard");
+const formExit = document.querySelector(".form__exit");
+const modalExit = document.querySelector(".modal__exit");
+const modalContainer = document.querySelector(".modal-container");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -136,7 +138,17 @@ class App {
       "click",
       this._resetTutorial.bind(this)
     );
-    formButtonDiscard.addEventListener("click", this._clearForm.bind(this));
+    document.addEventListener("click", this._closeForm.bind(this));
+  }
+
+  _closeForm(e) {
+    if (
+      e.target.classList.contains("modal-container") ||
+      e.target.classList.contains("modal__exit")
+    ) {
+      this._clearForm();
+      modalContainer.classList.add("hidden");
+    }
   }
 
   _updateTutorialSlide() {

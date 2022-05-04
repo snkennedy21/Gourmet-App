@@ -21,8 +21,9 @@
 </head>
 
 <body>
-  <div class="modal-wrap hidden">
+  <div class="modal-container modal-wrap hidden">
     <div class="modal">
+      <ion-icon class="modal__exit" name="close-outline"></ion-icon>
       <button class="pagination-button pagination-button__right hidden">
         <ion-icon class="pagination-icon" name="chevron-forward-outline"></ion-icon>
       </button>
@@ -175,7 +176,7 @@
     </div>
   </div>
 
-  <div class="form-container hidden">
+  <div class="modal-container form-container hidden">
     <form class="form" action="">
       <div class="form__header-container">
         <ion-icon class="form__header-icon" name="restaurant-sharp"></ion-icon>
@@ -229,8 +230,8 @@
           <textarea class="form__input--notes" placeholder="Add your notes here"></textarea>
         </div>
         <div class="form__button-container">
-          <button class="form__button form__button-discard">Discard</button>
           <button class="form__button form__button-submit" type="submit">Submit</button>
+          <ion-icon class="modal__exit" name="close-outline"></ion-icon>
         </div>
       </div>
     </form>

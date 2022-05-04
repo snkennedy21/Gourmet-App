@@ -14,6 +14,7 @@
   --dark-color: #404040;
   --dark-color-tint: #7a7a7a;
   --light-color: #ececec;
+  --color-exit: #d00404;
 }
 
 html {
@@ -100,6 +101,7 @@ body {
 }
 
 .form {
+  position: relative;
   padding: 2rem 0;
   display: flex;
   flex-direction: column;
@@ -306,7 +308,7 @@ textarea:focus {
 
 .sidebar__close-button:hover {
   cursor: pointer;
-  color: rgb(208, 4, 4);
+  color: var(--color-exit);
 }
 
 .restaurant {
@@ -355,7 +357,7 @@ textarea:focus {
 
 .restaurant__icon__trash:hover {
   cursor: pointer;
-  color: rgb(208, 4, 4);
+  color: var(--color-exit);
 }
 
 .restaurant__icon {
@@ -370,7 +372,7 @@ textarea:focus {
 
 .restaurant__icon__trash:hover {
   cursor: pointer;
-  color: rgb(208, 4, 4);
+  color: var(--color-exit);
 }
 
 .restaurant__data {
@@ -421,6 +423,19 @@ textarea:focus {
   width: 70%;
   height: 80vh;
   padding: 1rem;
+}
+
+.modal__exit {
+  position: absolute;
+  width: 4rem;
+  height: 4rem;
+  top: 0;
+  left: 0;
+}
+
+.modal__exit:hover {
+  color: var(--color-exit);
+  cursor: pointer;
 }
 
 .modal__header-container {
