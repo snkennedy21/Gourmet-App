@@ -538,8 +538,13 @@ class App {
     });
 
     // Build a new restaurant
+    const restaurantName = formInputName.value
+      .toLowerCase()
+      .split(" ")
+      .map((string) => string.charAt(0).toUpperCase() + string.substring(1))
+      .join(" ");
     let restaurant = new Restaurant(
-      formInputName.value,
+      restaurantName,
       formInputType.value,
       this.#rating,
       formInputNotes.value,
