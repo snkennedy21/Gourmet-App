@@ -1,10 +1,11 @@
 const formContainer = document.querySelector(".form-container");
 const form = document.querySelector(".form");
 const formInputName = document.querySelector(".form__input--name");
-const formInputType = document.querySelector(".form__input--type");
+const formInputCuisine = document.querySelector(".form__input--cuisine");
 const starWidgets = document.querySelectorAll(".star-widget__input");
 const formInputNotes = document.querySelector(".form__input--notes");
 const starLabels = document.querySelectorAll(".fa-star");
+const allRestaurants = document.querySelectorAll(".restaurant");
 const bookmarkIcon = document.querySelector(".bookmark-icon");
 const sidebar = document.querySelector(".sidebar");
 const sidebarRestaurantsContainer = document.querySelector(
@@ -19,7 +20,9 @@ const sidebarSelectorRating = document.querySelector(
 const sidebarSelectorDistance = document.querySelector(
   ".sidebar__selector__distance"
 );
-const sidebarSelectorType = document.querySelector(".sidebar__selector__type");
+const sidebarSelectorCuisine = document.querySelector(
+  ".sidebar__selector__cuisine"
+);
 const compassIcon = document.querySelector(".compass-icon");
 const informationIcon = document.querySelector(".information-icon");
 const modalWrap = document.querySelector(".modal-wrap");
@@ -46,9 +49,9 @@ class Restaurant {
   id = (Date.now() + "").slice(-10);
   clicks = 0;
   star = "<span>⭐</span>";
-  constructor(name, type, rating, notes, coords, distance) {
+  constructor(name, cuisine, rating, notes, coords, distance) {
     this.name = name;
-    this.type = type;
+    this.cuisine = cuisine;
     this.rating = rating;
     this.notes = notes;
     this.coords = coords;
@@ -72,7 +75,7 @@ class App {
   #selectedSorting;
   #selectedRating;
   #selectedDistance;
-  #selectedType;
+  #selectedCuisine;
   #restaurantsArray = [];
   #markerArray = [];
   #filteredRestaurantsArray;
@@ -120,7 +123,7 @@ class App {
       this._displayFilteredRestaurants.bind(this)
     );
 
-    sidebarSelectorType.addEventListener(
+    sidebarSelectorCuisine.addEventListener(
       "change",
       this._displayFilteredRestaurants.bind(this)
     );
@@ -261,7 +264,7 @@ class App {
       .join(" ");
     let restaurant = new Restaurant(
       restaurantName,
-      formInputType.value,
+      formInputCuisine.value,
       this.#rating,
       formInputNotes.value,
       [lat, lng],
@@ -287,7 +290,7 @@ class App {
     const marker = new L.Marker(restaurant.coords);
     marker.rating = restaurant.rating;
     marker.distance = restaurant.distance;
-    marker.type = restaurant.type;
+    marker.cuisine = restaurant.cuisine;
     this.#map.addLayer(marker);
     marker
       .bindPopup(
@@ -295,7 +298,7 @@ class App {
           maxWidth: 300,
           minWidth: 50,
           closeOnClick: false,
-          className: `${restaurant.type}-popup`,
+          className: `${restaurant.cuisine}-popup`,
         })
       )
       .setPopupContent(
@@ -381,44 +384,49 @@ class App {
     paginationButtonRight.classList.remove("hidden");
   }
 
+  _filterByDistance() {
+    this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
+      (el) => el.distance <= this.#selectedDistance
+    );
+
+    this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
+      (el) => el.distance <= this.#selectedDistance
+    );
+  }
+
+  _filterByRating() {
+    this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
+      (el) => el.rating === this.#selectedRating
+    );
+
+    this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
+      (el) => el.rating === this.#selectedRating
+    );
+  }
+
+  _filterByCuisine() {
+    this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
+      (el) => el.cuisine === this.#selectedCuisine
+    );
+
+    this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
+      (el) => el.cuisine === this.#selectedCuisine
+    );
+  }
+
   _displayFilteredRestaurants() {
     this.#filteredMarkerArray = this.#markerArray;
     this.#filteredRestaurantsArray = this.#restaurantsArray;
-    const allRestaurants = document.querySelectorAll(".restaurant");
     this.#selectedDistance = Number(sidebarSelectorDistance.value);
     this.#selectedRating = Number(sidebarSelectorRating.value);
     this.#selectedSorting = sidebarSelectorSort.value;
-    this.#selectedType = sidebarSelectorType.value;
+    this.#selectedCuisine = sidebarSelectorCuisine.value;
 
-    if (this.#selectedDistance !== 0) {
-      this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
-        (el) => el.distance <= this.#selectedDistance
-      );
+    if (this.#selectedDistance !== 0) this._filterByDistance();
 
-      this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
-        (el) => el.distance <= this.#selectedDistance
-      );
-    }
+    if (this.#selectedRating !== 0) this._filterByRating();
 
-    if (this.#selectedRating !== 0) {
-      this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
-        (el) => el.rating === this.#selectedRating
-      );
-
-      this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
-        (el) => el.rating === this.#selectedRating
-      );
-    }
-
-    if (this.#selectedType != 0) {
-      this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
-        (el) => el.type === this.#selectedType
-      );
-
-      this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
-        (el) => el.type === this.#selectedType
-      );
-    }
+    if (this.#selectedCuisine != 0) this._filterByCuisine();
 
     if (this.#selectedSorting == 0) this._sortHTML();
     if (this.#selectedSorting === "distance") this._sortByDistance();
@@ -432,7 +440,7 @@ class App {
     <div class="restaurant" data-id="${restaurant.id}" 
       data-rating="${restaurant.rating}"
       data-distance="${restaurant.distance}"
-      data-type="${restaurant.type}"">
+      data-type="${restaurant.cuisine}"">
       <div class="restaurant__header">
         <h1 class="restaurant__title">${restaurant.name}</h1>
         <div class="restaurant__icon-container">
@@ -445,7 +453,7 @@ class App {
           <p class="restaurant__data"><span class="star-emoji">${this.star.repeat(
             restaurant.rating
           )}</span></p>
-          <p class="restaurant__data">${restaurant.type}</p>
+          <p class="restaurant__data">${restaurant.cuisine}</p>
           <p class="restaurant__data">${restaurant.distance} Km</p>
           <p class="restaurant__notes">${restaurant.notes}</p>
         </div>
@@ -515,7 +523,7 @@ class App {
   }
 
   _clearForm() {
-    formInputName.value = formInputNotes.value = formInputType.value = "";
+    formInputName.value = formInputNotes.value = formInputCuisine.value = "";
     starWidgets.forEach((widget) => {
       widget.checked = false;
     });
