@@ -388,140 +388,42 @@ class App {
     this.#selectedDistance = Number(sidebarSelectorDistance.value);
     this.#selectedRating = Number(sidebarSelectorRating.value);
     this.#selectedSorting = sidebarSelectorSort.value;
-
     this.#selectedType = sidebarSelectorType.value;
 
-    if (
-      this.#selectedSorting !== 0 &&
-      this.#selectedDistance !== 0 &&
-      this.#selectedRating !== 0 &&
-      this.#selectedType != 0
-    ) {
-      this.#filteredMarkerArray = this.#markerArray.filter(
-        (el) =>
-          el.distance <= this.#selectedDistance &&
-          el.rating === this.#selectedRating &&
-          el.type === this.#selectedType
-      );
-
-      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
-        (el) =>
-          el.distance <= this.#selectedDistance &&
-          el.rating === this.#selectedRating &&
-          el.type === this.#selectedType
-      );
-    }
-
-    if (
-      this.#selectedSorting !== 0 &&
-      this.#selectedDistance !== 0 &&
-      this.#selectedRating === 0 &&
-      this.#selectedType == 0
-    ) {
-      this.#filteredMarkerArray = this.#markerArray.filter(
+    if (this.#selectedDistance !== 0) {
+      this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
         (el) => el.distance <= this.#selectedDistance
       );
-      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+
+      this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
         (el) => el.distance <= this.#selectedDistance
       );
     }
 
-    if (
-      this.#selectedSorting !== 0 &&
-      this.#selectedDistance === 0 &&
-      this.#selectedRating !== 0 &&
-      this.#selectedType == 0
-    ) {
-      this.#filteredMarkerArray = this.#markerArray.filter(
+    if (this.#selectedRating !== 0) {
+      this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
         (el) => el.rating === this.#selectedRating
       );
-      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+
+      this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
         (el) => el.rating === this.#selectedRating
       );
     }
 
-    if (
-      this.#selectedSorting !== 0 &&
-      this.#selectedDistance === 0 &&
-      this.#selectedRating === 0 &&
-      this.#selectedType != 0
-    ) {
-      this.#filteredMarkerArray = this.#markerArray.filter(
+    if (this.#selectedType != 0) {
+      this.#filteredMarkerArray = this.#filteredMarkerArray.filter(
         (el) => el.type === this.#selectedType
       );
-      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
+
+      this.#filteredRestaurantsArray = this.#filteredRestaurantsArray.filter(
         (el) => el.type === this.#selectedType
       );
-    }
-
-    if (
-      this.#selectedSorting !== 0 &&
-      this.#selectedDistance !== 0 &&
-      this.#selectedRating === 0 &&
-      this.#selectedType != 0
-    ) {
-      this.#filteredMarkerArray = this.#markerArray.filter(
-        (el) =>
-          el.type === this.#selectedType &&
-          el.distance <= this.#selectedDistance
-      );
-      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
-        (el) =>
-          el.type === this.#selectedType &&
-          el.distance <= this.#selectedDistance
-      );
-    }
-
-    if (
-      this.#selectedSorting !== 0 &&
-      this.#selectedDistance !== 0 &&
-      this.#selectedRating !== 0 &&
-      this.#selectedType == 0
-    ) {
-      this.#filteredMarkerArray = this.#markerArray.filter(
-        (el) =>
-          el.rating === this.#selectedRating &&
-          el.distance <= this.#selectedDistance
-      );
-      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
-        (el) =>
-          el.rating === this.#selectedRating &&
-          el.distance <= this.#selectedDistance
-      );
-    }
-
-    if (
-      this.#selectedSorting !== 0 &&
-      this.#selectedDistance === 0 &&
-      this.#selectedRating !== 0 &&
-      this.#selectedType != 0
-    ) {
-      this.#filteredMarkerArray = this.#markerArray.filter(
-        (el) =>
-          el.rating === this.#selectedRating && el.type === this.#selectedType
-      );
-      this.#filteredRestaurantsArray = this.#restaurantsArray.filter(
-        (el) =>
-          el.rating === this.#selectedRating && el.type === this.#selectedType
-      );
-    }
-
-    if (
-      this.#selectedSorting !== 0 &&
-      this.#selectedDistance === 0 &&
-      this.#selectedRating === 0 &&
-      this.#selectedType == 0
-    ) {
-      this.#filteredMarkerArray = this.#markerArray;
-      this.#filteredRestaurantsArray = this.#restaurantsArray;
     }
 
     if (this.#selectedSorting == 0) this._sortHTML();
     if (this.#selectedSorting === "distance") this._sortByDistance();
     if (this.#selectedSorting === "rating") this._sortByRating();
 
-    console.log(this.#markerArray);
-    console.log(this.#filteredMarkerArray);
     this._displayFilteredMarkers();
   }
 
