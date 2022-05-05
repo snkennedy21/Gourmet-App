@@ -110,22 +110,22 @@ class App {
 
     sidebarSelectorSort.addEventListener(
       "change",
-      this._displayFilteredRestaurants.bind(this)
+      this._filterRestaurants.bind(this)
     );
 
     sidebarSelectorRating.addEventListener(
       "change",
-      this._displayFilteredRestaurants.bind(this)
+      this._filterRestaurants.bind(this)
     );
 
     sidebarSelectorDistance.addEventListener(
       "change",
-      this._displayFilteredRestaurants.bind(this)
+      this._filterRestaurants.bind(this)
     );
 
     sidebarSelectorCuisine.addEventListener(
       "change",
-      this._displayFilteredRestaurants.bind(this)
+      this._filterRestaurants.bind(this)
     );
 
     compassIcon.addEventListener(
@@ -414,7 +414,7 @@ class App {
     );
   }
 
-  _displayFilteredRestaurants() {
+  _filterRestaurants() {
     this.#filteredMarkerArray = this.#markerArray;
     this.#filteredRestaurantsArray = this.#restaurantsArray;
     this.#selectedDistance = Number(sidebarSelectorDistance.value);
@@ -428,15 +428,23 @@ class App {
 
     if (this.#selectedCuisine != 0) this._filterByCuisine();
 
-    if (this.#selectedSorting == 0) this._sortHTML();
+    if (this.#selectedSorting == 0) this._generateHTML();
     if (this.#selectedSorting === "distance") this._sortByDistance();
     if (this.#selectedSorting === "rating") this._sortByRating();
 
     this._displayFilteredMarkers();
   }
 
+  _newRestaurantFile(restaurant) {
+    this.#filteredRestaurantsArray = this.#restaurantsArray;
+    this._generateHTML(this.#filteredRestaurantsArray);
+  }
+
   _generateHTML(restaurant) {
-    let html = `
+    sidebarRestaurantsContainer.innerHTML =
+      "<div class=sidebar__restaurants__el__alpha></div>";
+    this.#filteredRestaurantsArray.forEach((restaurant) => {
+      let html = `
     <div class="restaurant" data-id="${restaurant.id}" 
       data-rating="${restaurant.rating}"
       data-distance="${restaurant.distance}"
@@ -460,20 +468,9 @@ class App {
       </div>
     </div>`;
 
-    document
-      .querySelector(".sidebar__restaurants__el__alpha")
-      .insertAdjacentHTML("afterend", html);
-  }
-
-  _newRestaurantFile(restaurant) {
-    this._generateHTML(restaurant);
-  }
-
-  _sortHTML() {
-    sidebarRestaurantsContainer.innerHTML =
-      "<div class=sidebar__restaurants__el__alpha></div>";
-    this.#filteredRestaurantsArray.forEach((el, i) => {
-      this._generateHTML(this.#filteredRestaurantsArray[i]);
+      document
+        .querySelector(".sidebar__restaurants__el__alpha")
+        .insertAdjacentHTML("afterend", html);
     });
   }
 
@@ -496,7 +493,7 @@ class App {
       }
     }
     this.#filteredRestaurantsArray.sort(compare.bind(this));
-    this._sortHTML();
+    this._generateHTML();
   }
 
   _sortByRating() {
@@ -509,7 +506,7 @@ class App {
       }
     }
     this.#filteredRestaurantsArray.sort(compare.bind(this));
-    this._sortHTML();
+    this._generateHTML();
   }
 
   _closeMarkerPopups() {
