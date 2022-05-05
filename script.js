@@ -40,7 +40,7 @@ const paginationButtonLeft = document.querySelector(".pagination-button__left");
 const paginationButtonDone = document.querySelector(".pagination-button__done");
 const formExit = document.querySelector(".form__exit");
 const modalExit = document.querySelector(".modal__exit");
-const modalContainer = document.querySelector(".modal-container");
+const modalContainers = document.querySelectorAll(".modal-container");
 
 class Restaurant {
   id = (Date.now() + "").slice(-10);
@@ -78,29 +78,38 @@ class App {
   #filteredRestaurantsArray;
   #filteredMarkerArray;
   #tutorialSlideIndex = 0;
+  #selectedRestaurant;
+  #selectedRestaurantMarker;
+  #selectedRestaurantElement;
   constructor() {
     this._getPosition();
 
     this._getLocalStorage();
 
     form.addEventListener("submit", this._newRestaurant.bind(this));
+
     bookmarkIcon.addEventListener("click", this._toggleSidebar.bind(this));
+
     sidebarCloseButton.addEventListener(
       "click",
       this._toggleSidebar.bind(this)
     );
+
     sidebarRestaurantsContainer.addEventListener(
       "click",
       this._moveToMarker.bind(this)
     );
+
     sidebarRestaurantsContainer.addEventListener(
       "click",
       this._deleteRestaurant.bind(this)
     );
+
     sidebarSelectorSort.addEventListener(
       "change",
       this._displayFilteredRestaurants.bind(this)
     );
+
     sidebarSelectorRating.addEventListener(
       "change",
       this._displayFilteredRestaurants.bind(this)
@@ -110,33 +119,85 @@ class App {
       "change",
       this._displayFilteredRestaurants.bind(this)
     );
+
     sidebarSelectorType.addEventListener(
       "change",
       this._displayFilteredRestaurants.bind(this)
     );
+
     compassIcon.addEventListener(
       "click",
       this._moveToCurrentPosition.bind(this)
     );
+
     informationIcon.addEventListener("click", this._openModal.bind(this));
+
     modalCloseButton.addEventListener("click", this._closeModal.bind(this));
+
     modalLearnMoreButon.addEventListener(
       "click",
       this._startTutorial.bind(this)
     );
+
     paginationButtonRight.addEventListener(
       "click",
       this._goToNextTutorialSlide.bind(this)
     );
+
     paginationButtonLeft.addEventListener(
       "click",
       this._goToPreviousTutorialSlide.bind(this)
     );
+
     paginationButtonDone.addEventListener(
       "click",
       this._resetTutorial.bind(this)
     );
+
     document.addEventListener("click", this._closeForm.bind(this));
+  }
+
+  _selectRestaurant(e) {
+    this.#selectedRestaurantElement = e.target.closest(".restaurant");
+    this.#selectedRestaurant = this.#restaurantsArray.find(
+      (el) => el.id === this.#selectedRestaurantElement.dataset.id
+    );
+    this.#selectedRestaurantMarker = this.#markerArray.find(
+      (el) => el.id === this.#selectedRestaurantElement.dataset.id
+    );
+  }
+
+  _moveToMarker(e) {
+    if (e.target.classList.contains("restaurant__icon__nav")) {
+      this._toggleSidebar();
+      this._selectRestaurant(e);
+      this._closeMarkerPopups();
+      this.#selectedRestaurantMarker.openPopup();
+
+      this.#map.setView(this.#selectedRestaurant.coords, 15, {
+        animate: true,
+        pan: {
+          duration: 1,
+        },
+      });
+    }
+  }
+
+  _deleteRestaurant(e) {
+    if (e.target.classList.contains("restaurant__icon__trash")) {
+      this._selectRestaurant(e);
+      const restaurantIndex = this.#restaurantsArray.indexOf(
+        this.#selectedRestaurant
+      );
+      const markerIndex = this.#markerArray.indexOf(
+        this.#selectedRestaurantMarker
+      );
+      this.#restaurantsArray.splice(restaurantIndex, 1);
+      this.#markerArray.splice(markerIndex, 1);
+      this.#selectedRestaurantElement.remove();
+      this.#map.removeLayer(this.#selectedRestaurantMarker);
+      this._setLocalStorage();
+    }
   }
 
   _getPosition() {
@@ -217,6 +278,8 @@ class App {
 
     this._clearForm();
 
+    this._closeAllModals();
+
     this._setLocalStorage();
   }
 
@@ -247,14 +310,27 @@ class App {
     this.#markerArray.push(marker);
   }
 
+  // Functions for opening and closing modal windows
+  _openModal() {
+    modalWrap.classList.remove("hidden");
+  }
+
   _closeForm(e) {
     if (
       e.target.classList.contains("modal-container") ||
       e.target.classList.contains("modal__exit")
     ) {
       this._clearForm();
-      modalContainer.classList.add("hidden");
+      this._closeAllModals();
     }
+  }
+
+  _closeAllModals() {
+    modalContainers.forEach((modal) => modal.classList.add("hidden"));
+  }
+
+  _closeModal() {
+    modalWrap.classList.add("hidden");
   }
 
   _updateTutorialSlide() {
@@ -303,14 +379,6 @@ class App {
     modalTutorialContainer.classList.remove("hidden");
     paginationButtonLeft.classList.remove("hidden");
     paginationButtonRight.classList.remove("hidden");
-  }
-
-  _closeModal() {
-    modalWrap.classList.add("hidden");
-  }
-
-  _openModal() {
-    modalWrap.classList.remove("hidden");
   }
 
   _displayFilteredRestaurants() {
@@ -534,53 +602,10 @@ class App {
     this._sortHTML();
   }
 
-  _deleteRestaurant(e) {
-    if (e.target.classList.contains("restaurant__icon__trash")) {
-      const restaurantEl = e.target.closest(".restaurant");
-      const restaurant = this.#restaurantsArray.find(
-        (el) => el.id === restaurantEl.dataset.id
-      );
-      const restaurantMarker = this.#markerArray.find(
-        (el) => el.id === restaurantEl.dataset.id
-      );
-      const restaurantIndex = this.#restaurantsArray.indexOf(restaurant);
-      const markerIndex = this.#markerArray.indexOf(restaurantMarker);
-      console.log(this.#markerArray);
-      this.#restaurantsArray.splice(restaurantIndex, 1);
-      this.#markerArray.splice(markerIndex, 1);
-      console.log(this.#markerArray);
-      restaurantEl.remove();
-      this.#map.removeLayer(restaurantMarker);
-      this._setLocalStorage();
-    }
-  }
-
-  _moveToMarker(e) {
-    if (e.target.classList.contains("restaurant__icon__nav")) {
-      this._toggleSidebar();
-      const restaurantEl = e.target.closest(".restaurant");
-
-      const restaurant = this.#restaurantsArray.find(
-        (el) => el.id === restaurantEl.dataset.id
-      );
-
-      this.#markerArray.forEach((el) => {
-        el.closePopup();
-      });
-
-      const marker = this.#markerArray.find(
-        (el) => el.id === restaurantEl.dataset.id
-      );
-
-      marker.openPopup();
-
-      this.#map.setView(restaurant.coords, 15, {
-        animate: true,
-        pan: {
-          duration: 1,
-        },
-      });
-    }
+  _closeMarkerPopups() {
+    this.#markerArray.forEach((el) => {
+      el.closePopup();
+    });
   }
 
   _toggleSidebar() {
@@ -592,7 +617,6 @@ class App {
     starWidgets.forEach((widget) => {
       widget.checked = false;
     });
-    formContainer.classList.add("hidden");
   }
 
   _moveToCurrentPosition() {
